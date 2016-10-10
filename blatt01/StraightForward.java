@@ -18,7 +18,7 @@ public class StraightForward {
 	String host = "biber.cosy.sbg.ac.at";
 	String port = "5432";
 	String database = "dbtuning_ws2016";
-	String pwd = "Ohx1IngahJ1x";
+	String pwd = "";
 	String user = "tdafir";
 	String url = "jdbc:postgresql://" + host + ":" + port + "/" + database;
 	Connection con = null;
