@@ -47,7 +47,7 @@ public class ThirdAdvancedApproach {
 		}
         
 		
-		BufferedReader reader = new BufferedReader(new FileReader("path"));
+		BufferedReader reader = new BufferedReader(new FileReader(path));
 		String line = reader.readLine();
 		String query = "INSERT INTO auth values(?, ?);";
 		String[] cols = new String[2];

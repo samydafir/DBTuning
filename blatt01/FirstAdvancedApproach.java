@@ -56,7 +56,7 @@ public class FirstAdvancedApproach {
 			System.err.println("Query was not successful.");
 			e.printStackTrace();
 		}
-
+		
 		long endtime = System.currentTimeMillis();
 		long runtime = endtime - starttime;
 		System.out.println("Runtime in milliseconds: " + runtime);
