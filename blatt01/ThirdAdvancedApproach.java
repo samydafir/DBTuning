@@ -54,7 +54,7 @@ public class ThirdAdvancedApproach {
         PreparedStatement ps = con.prepareStatement(query);
         int count = 0;
         long start = System.currentTimeMillis();
-        while(count < 1200000){
+        while(line != null){
         	count++;
         	cols = line.split("\t");
         	ps.setString(1, cols[0]);
