@@ -19,8 +19,8 @@ public class FirstAdvancedApproach {
 		String host = "biber.cosy.sbg.ac.at";
 		String port = "5432";
 		String database = "dbtuning_ws2016";
-		String pwd = "kschörgnhofer";
-		String user = "Thohco3io3ue";
+		String pwd = "---";
+		String user = "---";
 		String url = "jdbc:postgresql://" + host + ":" + port + "/" + database;
 		Connection con = null;
 		try {
@@ -31,6 +31,9 @@ public class FirstAdvancedApproach {
 			e.printStackTrace();
 			return;
 		}
+
+		long starttime = System.currentTimeMillis();
+
 		try {
 			String qry = "INSERT INTO publ VALUES " + getValues() + ";";
 			con.createStatement().execute(qry);
@@ -39,6 +42,11 @@ public class FirstAdvancedApproach {
 			System.err.println("Query was not successful.");
 			e.printStackTrace();
 		}
+
+		long endtime = System.currentTimeMillis();
+		long runtime = endtime - starttime;
+		System.out.println("Runtime in seconds: " + runtime / 1000);
+		System.out.println("Runtime in minutes: " + runtime / (1000 * 60));
 	}
 
 	private static String getValues() throws Exception {
