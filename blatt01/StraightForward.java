@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.io.FileNotFoundException;
 
 public class StraightForward {
 
@@ -19,9 +20,21 @@ public class StraightForward {
 		String host = "biber.cosy.sbg.ac.at";
 		String port = "5432";
 		String database = "dbtuning_ws2016";
-		String pwd = "---";
-		String user = "---";
+		String pwd = "";
+		String user = "";
+		String path = "auth.tsv";
 		String url = "jdbc:postgresql://" + host + ":" + port + "/" + database;
+		
+		try {
+			BufferedReader credentials = new BufferedReader(new FileReader("credentials.txt"));
+			user = credentials.readLine();
+			pwd = credentials.readLine();
+			path = credentials.readLine();
+			credentials.close();
+		} catch (FileNotFoundException fnfe) {
+			System.out.println("Unable to find file with credentials.");
+		}
+		
 		Connection con = null;
 		try {
 			con = DriverManager.getConnection(url, user, pwd);
@@ -34,7 +47,7 @@ public class StraightForward {
 
 		long starttime = System.currentTimeMillis();
 
-		BufferedReader reader = new BufferedReader(new FileReader("auth.tsv"));
+		BufferedReader reader = new BufferedReader(new FileReader(path));
 		String line = reader.readLine();
 		String values = "";
 		String query = "";

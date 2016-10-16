@@ -20,9 +20,9 @@ public class FirstAdvancedApproach {
 		String host = "biber.cosy.sbg.ac.at";
 		String port = "5432";
 		String database = "dbtuning_ws2016";
-		String pwd = "---";
-		String user = "---";
-		String path = "";
+		String pwd = "";
+		String user = "";
+		String path = "auth.tsv";
 		String url = "jdbc:postgresql://" + host + ":" + port + "/" + database;
 		
 		try {
@@ -66,7 +66,7 @@ public class FirstAdvancedApproach {
 	private static String getValues(String path) throws Exception {
 
 		StringBuilder dataBuilder = new StringBuilder();
-		BufferedReader TSVFile = new BufferedReader(new FileReader(path + "auth.tsv"));
+		BufferedReader TSVFile = new BufferedReader(new FileReader(path));
 
 		String dataRow = TSVFile.readLine();
 
