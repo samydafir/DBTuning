@@ -2,17 +2,18 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 
-public class StraightForward {
+public class ThirdAdvancedApproach {
 
 	public static void main(String[] args) throws Exception {
+        
 		try {
 			Class.forName("org.postgresql.Driver");
 			System.err.println("Driver found.");
 		} catch (java.lang.ClassNotFoundException e) {
 			System.err.println("PostgreSQL JDBC Driver not found ... ");
 			e.printStackTrace();
-
 			return;
 		}
 
@@ -31,42 +32,26 @@ public class StraightForward {
 			e.printStackTrace();
 			return;
 		}
-
-		long starttime = System.currentTimeMillis();
-
+        
+		
 		BufferedReader reader = new BufferedReader(new FileReader("auth.tsv"));
 		String line = reader.readLine();
-		String values = "";
-		String query = "";
-		String[] lineArray;
-		int count = 0;
-		while (line != null) {
-			count++;
-			values = "";
-			values += "('";
-			lineArray = line.split("\t");
-			for (int i = 0; i < lineArray.length; i++) {
-				if (i < lineArray.length - 1) {
-					values += lineArray[i].replace("'", "''") + "', '";
-				} else {
-					values += lineArray[i].replace("'", "''") + "');";
-				}
-			}
-			query = "INSERT INTO auth VALUES" + values;
-			try {
-				con.createStatement().execute(query);
-			} catch (Exception e) {
-				System.err.println("Query was not successful.");
-				e.printStackTrace();
-			}
-
-			line = reader.readLine();
-		}
-		reader.close();
-
-		long endtime = System.currentTimeMillis();
-		long runtime = endtime - starttime;
-		System.out.println("Runtime in seconds: " + runtime / 1000);
-		System.out.println("Runtime in minutes: " + runtime / (1000 * 60));
-	}
+		String query = "INSERT INTO auth values(?, ?);";
+		String[] cols = new String[2];
+        PreparedStatement ps = con.prepareStatement(query);
+        int count = 0;
+        long start = System.currentTimeMillis();
+        while(count < 1200000){
+        	count++;
+        	cols = line.split("\t");
+        	ps.setString(1, cols[0]);
+        	ps.setString(2, cols[1]);
+        	ps.addBatch();
+        	line = reader.readLine();
+        }
+        ps.executeBatch();
+        long end = System.currentTimeMillis();
+        System.out.println("Duration:" + (end - start)/1000 + "s");
+        reader.close();    
+    }
 }

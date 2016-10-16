@@ -35,7 +35,7 @@ public class FirstAdvancedApproach {
 		long starttime = System.currentTimeMillis();
 
 		try {
-			String qry = "INSERT INTO publ VALUES " + getValues() + ";";
+			String qry = "INSERT INTO auth VALUES " + getValues() + ";";
 			con.createStatement().execute(qry);
 			System.out.println("Query sucessful.\n---\n" + "List of tables in database '" + database + "':");
 		} catch (Exception e) {
@@ -52,7 +52,7 @@ public class FirstAdvancedApproach {
 	private static String getValues() throws Exception {
 
 		StringBuilder dataBuilder = new StringBuilder();
-		BufferedReader TSVFile = new BufferedReader(new FileReader("publ.tsv"));
+		BufferedReader TSVFile = new BufferedReader(new FileReader("auth.tsv"));
 
 		String dataRow = TSVFile.readLine();
 
@@ -64,7 +64,6 @@ public class FirstAdvancedApproach {
 			dataBuilder.append("('" + dataRow + "'),");
 			dataRow = TSVFile.readLine(); // Read next line of data.
 			counter++;
-			System.out.println(counter);
 		}
 		TSVFile.close();
 
