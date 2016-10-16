@@ -21,7 +21,20 @@ public class FirstAdvancedApproach {
 		String database = "dbtuning_ws2016";
 		String pwd = "---";
 		String user = "---";
+		String path = "";
 		String url = "jdbc:postgresql://" + host + ":" + port + "/" + database;
+		
+		try {
+			BufferedReader credentials = new BufferedReader(new FileReader("credentials.txt"));
+			user = credentials.readLine();
+			pwd = credentials.readLine();
+			path = credentials.readLine();
+			credentials.close();
+		} catch (FileNotFoundException fnfe) {
+			System.out.println("Unable to find file with credentials.");
+		}
+
+		
 		Connection con = null;
 		try {
 			con = DriverManager.getConnection(url, user, pwd);
@@ -35,7 +48,7 @@ public class FirstAdvancedApproach {
 		long starttime = System.currentTimeMillis();
 
 		try {
-			String qry = "INSERT INTO auth VALUES " + getValues() + ";";
+			String qry = "INSERT INTO auth VALUES " + getValues(path) + ";";
 			con.createStatement().execute(qry);
 			System.out.println("Query sucessful.\n---\n" + "List of tables in database '" + database + "':");
 		} catch (Exception e) {
@@ -49,10 +62,10 @@ public class FirstAdvancedApproach {
 		System.out.println("Runtime in minutes: " + runtime / (1000 * 60));
 	}
 
-	private static String getValues() throws Exception {
+	private static String getValues(String path) throws Exception {
 
 		StringBuilder dataBuilder = new StringBuilder();
-		BufferedReader TSVFile = new BufferedReader(new FileReader("auth.tsv"));
+		BufferedReader TSVFile = new BufferedReader(new FileReader(path + "auth.tsv"));
 
 		String dataRow = TSVFile.readLine();
 
