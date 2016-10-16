@@ -59,6 +59,7 @@ public class FirstAdvancedApproach {
 
 		long endtime = System.currentTimeMillis();
 		long runtime = endtime - starttime;
+		System.out.println("Runtime in milliseconds: " + runtime);
 		System.out.println("Runtime in seconds: " + runtime / 1000);
 		System.out.println("Runtime in minutes: " + runtime / (1000 * 60));
 	}

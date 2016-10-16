@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 public class StraightForward {
 
 	public static void main(String[] args) throws Exception {
+		
 		try {
 			Class.forName("org.postgresql.Driver");
 			System.err.println("Driver found.");
@@ -79,6 +80,7 @@ public class StraightForward {
 
 		long endtime = System.currentTimeMillis();
 		long runtime = endtime - starttime;
+		System.out.println("Runtime in milliseconds: " + runtime);
 		System.out.println("Runtime in seconds: " + runtime / 1000);
 		System.out.println("Runtime in minutes: " + runtime / (1000 * 60));
 	}
