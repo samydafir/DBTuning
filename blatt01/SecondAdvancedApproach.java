@@ -21,8 +21,8 @@ public class SecondAdvancedApproach {
 		String host = "biber.cosy.sbg.ac.at";
 		String port = "5432";
 		String database = "dbtuning_ws2016";
-		String pwd = "Ohx1IngahJ1x";
-		String user = "tdafir";
+		String pwd = "---";
+		String user = "---";
 		String url = "jdbc:postgresql://" + host + ":" + port + "/" + database;
 		Connection con = null;
 		try {
