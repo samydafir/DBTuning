@@ -57,8 +57,8 @@ public class FirstAdvancedApproach {
 		String dataRow = TSVFile.readLine();
 
 		int counter = 0;
-		//10% of input publ.tsv
-		while (counter < 123321) {
+		//10% of input auth.tsv
+		while (counter < 309520) {
 			dataRow = dataRow.replace("'", "''");
 			dataRow = dataRow.replace("\t", "','");
 			dataBuilder.append("('" + dataRow + "'),");
