@@ -52,10 +52,9 @@ public class ThirdAdvancedApproach {
 		String query = "INSERT INTO auth values(?, ?);";
 		String[] cols = new String[2];
         PreparedStatement ps = con.prepareStatement(query);
-        int count = 0;
+
         long start = System.currentTimeMillis();
-        while(count < 1200000){
-        	count++;
+        while(line != null){
         	cols = line.split("\t");
         	ps.setString(1, cols[0]);
         	ps.setString(2, cols[1]);
