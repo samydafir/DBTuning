@@ -53,8 +53,8 @@ public class StraightForward {
 		String values = "";
 		String query = "";
 		String[] lineArray;
-
-		while (line != null) {
+		int count = 0;
+		while (count < 30952) {
 			values = "";
 			values += "('";
 			lineArray = line.split("\t");
@@ -74,6 +74,7 @@ public class StraightForward {
 			}
 
 			line = reader.readLine();
+			count++;		
 		}
 		reader.close();
 
