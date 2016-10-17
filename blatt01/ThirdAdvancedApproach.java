@@ -61,6 +61,7 @@ public class ThirdAdvancedApproach {
         	ps.addBatch();
         	line = reader.readLine();
         }
+	System.out.println("Begin transmit");
         ps.executeBatch();
         long end = System.currentTimeMillis();
         System.out.println("Duration:" + (end - start)/1000 + "s");

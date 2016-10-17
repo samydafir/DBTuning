@@ -50,6 +50,7 @@ public class FirstAdvancedApproach {
 
 		try {
 			String qry = "INSERT INTO auth VALUES " + getValues(path) + ";";
+			System.out.println("Begin transmit");
 			con.createStatement().execute(qry);
 			System.out.println("Query sucessful.");
 		} catch (Exception e) {
@@ -70,12 +71,13 @@ public class FirstAdvancedApproach {
 		BufferedReader TSVFile = new BufferedReader(new FileReader(path));
 
 		String dataRow = TSVFile.readLine();
-
-		while (dataRow != null) {
+		int count = 0;
+		while (count < 1547601) {
 			dataRow = dataRow.replace("'", "''");
 			dataRow = dataRow.replace("\t", "','");
 			dataBuilder.append("('" + dataRow + "'),");
 			dataRow = TSVFile.readLine(); // Read next line of data.
+			count++;
 		}
 		TSVFile.close();
 
