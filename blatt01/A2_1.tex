@@ -11,7 +11,7 @@
  Group Name (e.g. A1, B5, B3)\\
  \large Lastname1 Firstname1, StudentID1 \\
  \large Lastname2 Firstname2, StudentID2 \\
- \large Lastname3 Firstname3, StudentID3 
+ \large Lastname3 Firstname3, StudentID3
 }
 
 \begin{document}
@@ -22,13 +22,14 @@
 
   \paragraph{Implementation}
 
-  Describe in a few lines how this approach works and show the query
-  that you use. You may also show small (!) code snippets if you think
-  they help the understanding.
+  For the Straightforward Implementation we create a SQL-INSERT command for every single line of the given input file. We send the current command to the database server, before we start creating the SQL-INSERT command for the next line of the input file.
 
 {\small
 \begin{verbatim}
-    MY SQL QUERY ...
+    INSERT INTO auth VALUES ('Jurgen Annevelink','books/acm/kim95/AnnevelinkACFHK95');
+    INSERT INTO auth VALUES ('Rafiul Ahad','books/acm/kim95/AnnevelinkACFHK95');
+    INSERT INTO auth VALUES ('Amelia Carlson','books/acm/kim95/AnnevelinkACFHK95');
+    etc.
 \end{verbatim}
 }
 
@@ -36,32 +37,33 @@
 
   \paragraph{Implementation}
 
-  Describe in a few lines how this approach works and show the query
-  that you use. You may also show small (!) code snippets if you think
-  they help the understanding.
-
+  For this approach we build one huge SQL-INSERT command which contains all the values of the input file.
 
 {\small
 \begin{verbatim}
-    MY SQL QUERY ...
+    INSERT  INTO auth VALUES
+    ('Jurgen Annevelink','books/acm/kim95/AnnevelinkACFHK95'),
+    ('Rafiul Ahad','books/acm/kim95/AnnevelinkACFHK95'),
+    ('Amelia Carlson','books/acm/kim95/AnnevelinkACFHK95'),
+    ...
+    ('Klaus Richter','series/vdi/SchenkR07');
 \end{verbatim}
 }
 
   \paragraph{Why is this approach efficient?}
 
-  Explain, why this approach is more efficient than the
-  straightforward approach. Where does the system save the time? Be
-  clear and precise!
-  
-  Important: Cite the references that you used to answer this
-  question, for example, with footnotes\footnote{PostgreSQL 9.0
-    Documentation, Chapter 3.5,
-    \url{http://www.postgresql.org/docs/9.0/static/tutorial-window.html}}.
+  There are two main reasons, why this approach is faster than the straightforward implementation:
+  \begin{enumerate}
+  	\item Compared to the straightforward approach we have only about 60\% of the amount of data which has to be sent via the network to the database server. In the straightforward approach we have for every single input line an extra "INSERT INTO auth VALUES"-statement, which is about 40\% of the whole INSERT-command (INSERT-command = INSERT-statement + values). In this approach we need the INSERT-statement only once, causing the size of the transferred data to shrink to about 60\%. Less data needs less time to be sent.
+    \item For the straightforward approach we send about 3 million sql commands via the network to the database server, whereas for this approach we need again only one. This cuts down the overhead for sending the sql command(s) vastly. Arrived at the database server, this time the database has to parse, optimize and create/access paths to the data only once (and not 3 million times), which again saves a lot of time.
+  \end{enumerate}
+This approach was already known by us (so no references for this one).
 
   \paragraph{Tuning principle}
 
-  Which tuning principle did you apply? Pick the one that describes
-  this approach best (``thing globally, fix locally'' is too general).
+  "Start-up Costs Are High; Running Costs Are Low":
+  \\
+  For this approach we tried to care for the \textbf{network latency} and cut down the \textbf{query overhead} with using only one single query.
 
     \subsection*{Efficient Approach 2: (NAME)}
 
@@ -82,7 +84,7 @@
   Explain, why this approach is more efficient than the
   straightforward approach. Where does the system save the time? Be
   clear and precise!
-  
+
   Important: Cite the references that you used to answer this
   question, for example, with footnotes\footnote{PostgreSQL 9.0
     Documentation, Chapter 3.5,
@@ -101,7 +103,7 @@
     \hline
     Straightforward & ... \\
     Approach 1 (NAME) & ... \\
-    Approach 2 (NAME) & ...     
+    Approach 2 (NAME) & ...
   \end{tabular}
   \end{table}
 
