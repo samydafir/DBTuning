@@ -8,9 +8,9 @@
 }
 
 \author{
- Group Name (e.g. A1, B5, B3)\\
- \large Lastname1 Firstname1, StudentID1 \\
- \large Lastname2 Firstname2, StudentID2 \\
+ A2\\
+ \large Lastname Firstname1, StudentID1 \\
+ \large Dafir Thomas Samy, 1331483 \\
  \large Lastname3 Firstname3, StudentID3 
 }
 
@@ -63,38 +63,44 @@
   Which tuning principle did you apply? Pick the one that describes
   this approach best (``thing globally, fix locally'' is too general).
 
-    \subsection*{Efficient Approach 2: (NAME)}
+    \subsection*{Efficient Approach 3: (Prepared Statements)}
 
   \paragraph{Implementation}
 
-  Describe in a few lines how this approach works and show the query
-  that you use. You may also show small (!) code snippets if you think
-  they help the understanding.
+	JDBC and the $PreparedStatement$ class included in Java were used in this approach. The connection is established through JDBC. This results in a connection object which can then be used to create a prepared statement:
+	{\small
+	\begin{verbatim}
+		String query = "INSERT INTO auth values(?, ?);";
+		PreparedStatement ps = connection.prepareStatement(query);
+	\end{verbatim}
+	}
 
-{\small
-\begin{verbatim}
-    MY SQL QUERY ...
-\end{verbatim}
-}
+	This statement is then sent directly to the database which compiles it. We then use the batch-insert functionality a $PreparedStatement$ - object offers. All data rows are added to the batch and finally the query is executed through executing the prepared statement with the collected data.
 
   \paragraph{Why is this approach efficient?}
-
-  Explain, why this approach is more efficient than the
-  straightforward approach. Where does the system save the time? Be
-  clear and precise!
   
-  Important: Cite the references that you used to answer this
-  question, for example, with footnotes\footnote{PostgreSQL 9.0
-    Documentation, Chapter 3.5,
-    \url{http://www.postgresql.org/docs/9.0/static/tutorial-window.html}}.
+  It is efficient in two ways:
+  \begin{itemize}
+  	\item It reduces the amount of data that needs to be sent to the database.
+  	\item It reduces the amount of query-statements which have to be compiled and optimized by the database.
+  \end{itemize}
+	
+	This approach is made efficient using two tuning principles:
+	\begin{itemize}
+		\item Using precompiled statements: The query we want to execute is sent to the database, compiled and optimized  right away. Once we collect all our data rows and send them to the database the precompiled statement is used directly without the need to go through the compilation and optimization process for every single row (in contrast to the straightforward approach). This saves huge amounts of time as can be seen in the experiments
+        \footnote{JDBC Documentation,\url{https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html}}.
+		\item Reducing network latency by reducing the amount of data sent to the database. The query is only sent once, after that only data rows are transmitted. Compared to the straight forward approach this saves a lot of data, reducing the total amount of data to send and thus increasing the total speed of the transmission
+        \footnote{Lecture Slides by Prof. Augsten}.
+\end{itemize}
 
-  \paragraph{Tuning principle}
 
-  Which tuning principle did you apply? Pick the one that describes
-  this approach best (``thing globally, fix locally'' is too general).
-
+  \paragraph{Tuning principles}
+  \begin{itemize}
+  	\item Use precompiled statements (here: prepared statements).
+  	\item Reduce network latency (through reducing amount of data to be transfered).
+  \end{itemize}
+  
   \subsection*{Runtime Experiment}
-
   \begin{table}[H]
   \begin{tabular}{l|r}
     Approach & Runtime [sec] \\
@@ -121,6 +127,6 @@
 
   \subsection*{Time Spent on this Assignment}
 
-  Time in hours per person: {\bf XXX}
+%  Time in hours per person: {\bf XXX}
 
 \end{document}
