@@ -73,7 +73,7 @@ For the second improved approach we wanted to use the "COPY FROM"-statement to i
 
 {\small
 \begin{verbatim}
-  COPY  auth FROM '/home/stud3/%user%/Documents/dbtuning/blatt01/auth.tsv' DELIMITER '\tab';
+  COPY auth FROM '/home/stud3/%user%/Documents/dbtuning/blatt01/auth.tsv' DELIMITER '\tab';
 \end{verbatim}
 }
 
@@ -84,12 +84,12 @@ As already mentioned we were not able to actually test this approach. But the fo
 \item The size of the data which has to be transferred via the network is pretty small. You have only the COPY-statement, the path to the document and the option "DELIMITER". Less data needs less time to be sent.
 \item There is only one sql command sent, and not about 3 million, which causes much less overhead and network traffic at all. Additionally the database has to parse, optimize and create/access paths to the data only once.
 \item In the straightforward approach the computer which executes the import program has to calculate all the 3 million SQL-commands, in this approach the executing computer has to calculate nearly nothing. All the work does the database server, which has probably more computing resources.
-\item The COPY-statement is a statement which was made for fast imports (and exports) from files (or to files), so it is probably faster than a separate program which first reads data from a file and then sends it to the database as an INSERT-statement.
-
-Important: Cite the references that you used to answer this
-question, for example, with footnotes\footnote{PostgreSQL 9.2
+\item The COPY-statement is a statement which was made for fast imports (and exports) from files (or to files), so it is probably faster than a separate program which first reads data from a file and then sends it to the database as an INSERT-statement.\footnote{PostgreSQL 9.2
   Documentation, Chapter VI.I SQL Commands,
-  \url{https://www.postgresql.org/docs/9.2/static/sql-copy.html}}.
+  \url{https://www.postgresql.org/docs/9.2/static/sql-copy.html}}
+\end{itemize}
+
+
 
 \paragraph{Tuning principle}
 "Start-up Costs Are High; Running Costs Are Low":
