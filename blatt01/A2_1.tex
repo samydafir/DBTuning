@@ -9,7 +9,7 @@
 
 \author{
  A2\\
-\large Lastname Firstname1, StudentID1 \\
+\large Baumgartner Dominik, 0920177 \\
 \large Dafir Thomas Samy, 1331483 \\
 \large Sch\"orgnhofer Kevin, 1421082
 }
@@ -54,10 +54,10 @@
 
   There are two main reasons, why this approach is faster than the straightforward implementation:
   \begin{enumerate}
-  	\item Compared to the straightforward approach we have only about 60\% of the amount of data which has to be sent via the network to the database server. In the straightforward approach we have for every single input line an extra "INSERT INTO auth VALUES"-statement, which is about 40\% of the whole INSERT-command (INSERT-command = INSERT-statement + values). In this approach we need the INSERT-statement only once, causing the size of the transferred data to shrink to about 60\%. Less data needs less time to be sent.
+  	\item Compared to the straightforward approach we have only about 60\% of the amount of data which has to be sent via the network to the database server. In the straightforward approach we have a separate "INSERT INTO auth VALUES"-statement for every single input line, which is about 40\% of the whole INSERT-command (INSERT-command = INSERT-statement + values). In this approach we need the INSERT-statement only once, causing the size of the transferred data to shrink to about 60\%. Less data needs less time to be sent.
     \item For the straightforward approach we send about 3 million sql commands via the network to the database server, whereas for this approach we need only one. This cuts down the overhead for sending the sql command(s) vastly. Arrived at the database server, this time the database has to parse, optimize and create/access paths to the data only once (and not 3 million times), which again saves a lot of time.
   \end{enumerate}
-This approach was already known by us and the reasons why this approach is faster are pretty obvious (which is the reason why there are no references for this approach).
+This approach was already known to us and the reasons why this approach is faster are pretty obvious (which is the reason why there are no references for this approach).
 
   \paragraph{Tuning principle}
 
@@ -82,24 +82,23 @@ For the second improved approach we wanted to use the "COPY FROM"-statement to i
 As already mentioned we were not able to actually test this approach. But the following arguments lead to the assumption that it should be faster than the straightforward approach:
 \begin{itemize}
 \item The size of the data which has to be transferred via the network is pretty small. You have only the COPY-statement, the path to the document and the option "DELIMITER". Less data needs less time to be sent.
-\item There is only one sql command sent, and not about 3 million, which causes much less overhead and network traffic at all. Additionally the database has to parse, optimize and create/access paths to the data only once.
-\item In the straightforward approach the computer which executes the import program has to calculate all the 3 million SQL-commands, in this approach the executing computer has to calculate nearly nothing. All the work does the database server, which has probably more computing resources.
+\item There is only one sql command sent, and not about 3 million, which causes much less overhead and network traffic. Additionally the database has to parse, optimize and create/access paths to the data only once.
+\item In the straightforward approach the computer which executes the import program has to calculate all  3 million SQL-commands. In this approach the executing computer has to calculate nearly nothing. All the work is done by the database server, which probably has more computing resources.
 \item The COPY-statement is a statement which was made for fast imports (and exports) from files (or to files), so it is probably faster than a separate program which first reads data from a file and then sends it to the database as an INSERT-statement.\footnote{PostgreSQL 9.2
   Documentation, Chapter VI.I SQL Commands,
   \url{https://www.postgresql.org/docs/9.2/static/sql-copy.html}}
 \end{itemize}
 
 
-
 \paragraph{Tuning principle}
 "Start-up Costs Are High; Running Costs Are Low":
 \\
-Like for our first improved approach we have here again \textbf{less network traffic} and a small \textbf{query overhead}.
+Like in our first improved approach there is \textbf{less network traffic} and a small \textbf{query overhead}.
 \\
 "Render on the Server What Is Due on the Server":
 The combination of the import instruction and the values is not created on client side, but on server side.
 
-    \subsection*{Efficient Approach 3: (Prepared Statements)}
+    \subsection*{Efficient Approach 3: (Prepared Statement)}
 
   \paragraph{Implementation}
 
@@ -131,38 +130,30 @@ The combination of the import instruction and the values is not created on clien
 
 
   \paragraph{Tuning principles}
-  \begin{itemize}
-  	\item Use precompiled statements (here: prepared statements).
-  	\item Reduce network latency (through reducing amount of data to be transfered).
-  \end{itemize}
+  
+	"Use precompiled statements" (here: prepared statements).
+	\\
+  	"Reduce network latency" (through reducing amount of data to be transfered).
 
   \subsection*{Runtime Experiment}
   \begin{table}[H]
   \begin{tabular}{l|r}
     Approach & Runtime [sec] \\
     \hline
-    Straightforward & ... \\
-    Approach 1 (NAME) & ... \\
-    Approach 2 (NAME) & ...
+    Straightforward & 9999 \\
+    Approach 1 (single query) & 54 \\
+    Approach 3 (prepared statement) & 128
   \end{tabular}
   \end{table}
 
   \bigskip
-
-  \noindent Notes:
-  \begin{itemize}
-  \item For the straightforward approach you are allowed to import
-    only a subset of the tuples (e.g., 10000 tuples) and estimate the
-    overall runtime. The timings for all other approaches should be
-    real measurements over the whole dataset.
-  \item Specify the setting of the experiment, i.e., where is the
-    database server (local machine, database server at the
-    department), where is the client (wired/wireless network of the
-    department)?
-\end{itemize}
-
+  
+  \subsection*{Setting}
+  All experiments were executed in the computer room (on campus). A direct connection to the database server (biber) was established from there using Java 8 and JDBC.
+  
+  
   \subsection*{Time Spent on this Assignment}
 
-%  Time in hours per person: {\bf XXX}
+  Time in hours per person: {\textbf XXX}
 
 \end{document}
