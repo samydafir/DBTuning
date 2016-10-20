@@ -31,5 +31,3 @@ location character varying,
 CONSTRAINT deptT PRIMARY KEY (dept)
 );
 -- no explicit creation of a unique index necessary, because the primary key creates implicit an unique index on dept (according to postgre doc)
-
-
