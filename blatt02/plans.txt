@@ -1,4 +1,4 @@
-#query 1 (original)
+#Query 1 (original)
 181654ms
 Aggregate  (cost=117285824.33..117285824.34 rows=1 width=4)
    ->  Seq Scan on employee e1  (cost=0.00..117285741.00 rows=33333 width=4)
@@ -32,3 +32,12 @@ Aggregate  (cost=4847.34..4847.35 rows=1 width=4)
                                        Group Key: employee.dept
                                        ->  Seq Scan on employee  (cost=0.00..1916.00 rows=100000 width=8)
 
+
+#Query 2 (original)
+103ms
+Unique  (cost=0.29..3799.50 rows=100983 width=4)
+   ->  Index Only Scan using ssnume on employee  (cost=0.29..3547.04 rows=100983
+
+#Query 2 (rewritten)
+72ms
+Seq Scan on employee  (cost=0.00..1934.83 rows=100983 width=4)
