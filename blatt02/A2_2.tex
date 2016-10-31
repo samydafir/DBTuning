@@ -104,7 +104,7 @@ WHERE e1.dept = t.dept AND e1.salary > e2.avgsalary AND e1.dept = e2.dept;
 \paragraph{Evaluation of the Execution Plans}
 
 Execution plan original query:
-
+\begin{noindent}
 \begin{verbatim}
 Aggregate  (cost=117285824.33..117285824.34 rows=1 width=4)
    ->  Seq Scan on employee e1  (cost=0.00..117285741.00 rows=33333 width=4)
@@ -112,16 +112,21 @@ Aggregate  (cost=117285824.33..117285824.34 rows=1 width=4)
          SubPlan 1
            ->  Aggregate  (cost=1172.83..1172.84 rows=1 width=5)
                  ->  Nested Loop  (cost=117.23..1159.67 rows=5263 width=5)
-                       ->  Index Only Scan using deptt on techdept  (cost=0.15..8.17 rows=1 width=32)
+                       ->  Index Only Scan using deptt on techdept 
+	                        (cost=0.15..8.17 rows=1 width=32)
                              Index Cond: (dept = (e1.dept)::text)
-                       ->  Bitmap Heap Scan on employee e2  (cost=117.08..1098.87 rows=5263 width=8)
+                       ->  Bitmap Heap Scan on employee e2  
+	                       (cost=117.08..1098.87 rows=5263 width=8)
                              Recheck Cond: ((dept)::text = (e1.dept)::text)
-                             ->  Bitmap Index Scan on depte  (cost=0.00..115.77 rows=5263 width=0)
+                             ->  Bitmap Index Scan on depte  
+	                             (cost=0.00..115.77 rows=5263 width=0)
                                    Index Cond: ((dept)::text = (e1.dept)::text)
 \end{verbatim}
-
-Give an interpretation of the execution plan, i.e., describe how the
-original query is evaluated.
+\end{noindent}
+The query consists of a subquery and a main query. the main query iterates over each employee in the employee table and checks is salary is larger than the value returned by the subquery. The plan makes visible the execution of the subquery for each entry in the employee table. In the end an aggregate function is executed giving us the number of all employees earning more than the average salary of their respective department.
+The subquery is executed as follows:
+First a bitmap index scan is is performed on the employee table to get all blocks where employees in the same department as the current employee in the outer query (e1). Next a Bitmap Heap Scan is performed (scan all previously marked blocks) and the selection condition is rechecked on the fly. In the next step an index nested loop join is performed where the index on Techdept.dept is scanned for the every employee in the result of the former step. Finally the average salary of all remaining employees which are all in the same department as e1 i computed. This value is then used for the comparison in the outer query.
+\newpage
 
 Execution plan rewritten query:
 
@@ -132,14 +137,19 @@ Aggregate  (cost=4847.34..4847.35 rows=1 width=4)
          Join Filter: (e1.salary > e2.avgsalary)
          ->  Seq Scan on employee e1  (cost=0.00..1916.00 rows=100000 width=12)
          ->  Hash  (cost=2435.66..2435.66 rows=19 width=67)
-               ->  Hash Join  (cost=2416.67..2435.66 rows=19 width=67)
+               ->  Hash Join 
+               (cost=2416.67..2435.66 rows=19 width=67)
                      Hash Cond: ((t.dept)::text = (e2.dept)::text)
-                     ->  Seq Scan on techdept t  (cost=0.00..16.40 rows=640 width=32)
+                     ->  Seq Scan on techdept t  
+                     (cost=0.00..16.40 rows=640 width=32)
                      ->  Hash  (cost=2416.43..2416.43 rows=19 width=35)
-                           ->  Subquery Scan on e2  (cost=2416.00..2416.43 rows=19 width=35)
-                                 ->  HashAggregate  (cost=2416.00..2416.24 rows=19 width=8)
+                           ->  Subquery Scan on e2  
+                           (cost=2416.00..2416.43 rows=19 width=35)
+                                 ->  HashAggregate  
+                                 (cost=2416.00..2416.24 rows=19 width=8)
                                        Group Key: employee.dept
-                                       ->  Seq Scan on employee  (cost=0.00..1916.00 rows=100000 width=8)
+                                       ->  Seq Scan on employee  
+                                       (cost=0.00..1916.00 rows=100000 width=8)
 \end{verbatim}
 
 Give an interpretation of the execution plan, i.e., describe how the
