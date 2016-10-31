@@ -1,0 +1,34 @@
+#query 1 (original)
+181654ms
+Aggregate  (cost=117285824.33..117285824.34 rows=1 width=4)
+   ->  Seq Scan on employee e1  (cost=0.00..117285741.00 rows=33333 width=4)
+         Filter: (salary > (SubPlan 1))
+         SubPlan 1
+           ->  Aggregate  (cost=1172.83..1172.84 rows=1 width=5)
+                 ->  Nested Loop  (cost=117.23..1159.67 rows=5263 width=5)
+                       ->  Index Only Scan using deptt on techdept  (cost=0.15..8.17 rows=1 width=32)
+                             Index Cond: (dept = (e1.dept)::text)
+                       ->  Bitmap Heap Scan on employee e2  (cost=117.08..1098.87 rows=5263 width=8)
+                             Recheck Cond: ((dept)::text = (e1.dept)::text)
+                             ->  Bitmap Index Scan on depte  (cost=0.00..115.77 rows=5263 width=0)
+                                   Index Cond: ((dept)::text = (e1.dept)::text)
+
+
+
+#Query 1 (rewritten) 
+95ms
+Aggregate  (cost=4847.34..4847.35 rows=1 width=4)
+   ->  Hash Join  (cost=2435.89..4764.01 rows=33333 width=4)
+         Hash Cond: ((e1.dept)::text = (t.dept)::text)
+         Join Filter: (e1.salary > e2.avgsalary)
+         ->  Seq Scan on employee e1  (cost=0.00..1916.00 rows=100000 width=12)
+         ->  Hash  (cost=2435.66..2435.66 rows=19 width=67)
+               ->  Hash Join  (cost=2416.67..2435.66 rows=19 width=67)
+                     Hash Cond: ((t.dept)::text = (e2.dept)::text)
+                     ->  Seq Scan on techdept t  (cost=0.00..16.40 rows=640 width=32)
+                     ->  Hash  (cost=2416.43..2416.43 rows=19 width=35)
+                           ->  Subquery Scan on e2  (cost=2416.00..2416.43 rows=19 width=35)
+                                 ->  HashAggregate  (cost=2416.00..2416.24 rows=19 width=8)
+                                       Group Key: employee.dept
+                                       ->  Seq Scan on employee  (cost=0.00..1916.00 rows=100000 width=8)
+
