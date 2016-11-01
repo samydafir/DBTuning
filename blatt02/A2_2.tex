@@ -156,10 +156,9 @@ Aggregate  (cost=4847.34..4847.35 rows=1 width=4)
 Give an interpretation of the execution plan, i.e., describe how the
 rewritten query is evaluated.
 \\ \\
+\paragraph{Runtime}
 The biggest difference between the two queries is the fact that in the original the inner query is executed for every employee whereas in the rewritten one the inner query is executed exactly once and the result is used to in a hash join. This saves huge amounts of time as can be seen in runtime evaluation. apart from that there is no real difference concerning the efficiency of the techniques uses. Both use some linear heap scanning and both also use the index structures to conduct joins. So the main gain concerning execution time is really achieved through unnesting of the correlated inner query.
 
-\paragraph{Runtime} Discuss, why the rewritten query is (or is not)
-faster than the original query.
 
 
 \begin{table}[H]
@@ -208,9 +207,9 @@ Execution plan rewritten query:
 Seq Scan on employee  (cost=0.00..1934.83 rows=100983 width=4)
 \end{verbatim}
 \ \\
-For this query a simple sequel scan is executed on Employee.
+For this query a simple sequential scan is executed on Employee.
 \paragraph{Runtime} 
-The big difference between these two queries is the UNIQUE operation. First the row needs to be sorted, and then duplicates needs to be deleted which costs time. In the rewritten query, we know that ssnum is a unique key, which means there are no duplicates and one simple sequel scan is enough and faster for this query.
+The big difference between these two queries is the UNIQUE operation. First the row needs to be sorted, and then duplicates needs to be deleted which costs time. In the rewritten query, we know that ssnum is a unique key, which means there are no duplicates and one simple sequential scan is enough and faster for this query.
 
 
 \begin{table}[H]
