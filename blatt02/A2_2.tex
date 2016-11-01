@@ -66,7 +66,7 @@ creates implicitly an unique index on dept (according to postgre doc)
 
 \paragraph{Populating the Tables}
 
-	The tables were populated using the $copy$ command on a tsv file containing the specified amount of data rows for each table. The files were created with a self-written java program generating values for each entry and inserting them into the corresponding tsv-file.
+	The tables were populated using the $copy$ command on a tsv-file containing the specified amount of data rows for each table. The files were created with a self-written java program generating values for each entry and inserting them into the corresponding tsv-file.
 	the following values were created:
 
 	\begin{itemize}
@@ -126,7 +126,7 @@ Aggregate  (cost=117285824.33..117285824.34 rows=1 width=4)
 \end{noindent}
 The query consists of a subquery and a main query. the main query iterates over each employee in the employee table and checks if salary is larger than the value returned by the subquery. The plan makes visible the execution of the subquery for each entry in the employee table. In the end an aggregate function is executed giving us the number of all employees earning more than the average salary of their respective department.
 The subquery is executed as follows:
-First a bitmap index scan is is performed on the employee table to get all blocks where employees in the same department as the current employee in the outer query (e1). Next a Bitmap Heap Scan is performed (scan all previously marked blocks) and the selection condition is rechecked on the fly. In the next step an index nested loop join is performed where the index on Techdept.dept is scanned for the every employee in the result of the former step. Finally the average salary of all remaining employees which are all in the same department as e1 is computed. This value is then used for the comparison in the outer query.
+First a bitmap index scan is performed on the employee table to get all blocks where employees in the same department as the current employee in the outer query (e1). Next a Bitmap Heap Scan is performed (scan all previously marked blocks) and the selection condition is rechecked on the fly. In the next step an index nested loop join is performed where the index on Techdept.dept is scanned for the every employee in the result of the former step. Finally the average salary of all remaining employees which are all in the same department as e1 is computed. This value is then used for the comparison in the outer query.
 \newpage
 \ \\
 Execution plan rewritten query:
@@ -210,7 +210,7 @@ Seq Scan on employee  (cost=0.00..1934.83 rows=100983 width=4)
 There is not much to optimize in this query. A simple sequential scan is conducted on the employee table.
 
 \paragraph{Runtime}
-Both queries return the exact same result since ssnums are unique. The diference in runtime is due to the fact that conducting an index only scan on the unique index simply requires more block accesses than a sequential scan of the table.
+Both queries return the exact same result since ssnums are unique. The difference in runtime is due to the fact that conducting an index only scan on the unique index simply requires more block accesses than a sequential scan of the table.
 
 \begin{table}[H]
   \begin{tabular}{l|r}
