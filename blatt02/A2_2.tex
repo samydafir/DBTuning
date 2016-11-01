@@ -198,7 +198,7 @@ Unique  (cost=0.29..3799.50 rows=100983 width=4)
    ->  Index Only Scan using ssnume on employee  (cost=0.29..3547.04 rows=100983
 \end{verbatim}
 \ \\
-First, the optimizer uses an Index Scan on Employee, which has a Unique Index on ssnum. Afterwards the UNIQUE operator deletes all duplicates, but therefore it needs a sorted row which we got due to the Index Scan.
+The optimizer notices that employee has a unique index on ssnum, so all unique ssnums can be obtained simply by scanning only the index since i contains every unique ssnum in the table.
 \\
 \\
 Execution plan rewritten query:
@@ -207,10 +207,10 @@ Execution plan rewritten query:
 Seq Scan on employee  (cost=0.00..1934.83 rows=100983 width=4)
 \end{verbatim}
 \ \\
-For this query a simple sequential scan is executed on Employee.
-\paragraph{Runtime} 
-The big difference between these two queries is the UNIQUE operation. First the row needs to be sorted, and then duplicates needs to be deleted which costs time. In the rewritten query, we know that ssnum is a unique key, which means there are no duplicates and one simple sequential scan is enough and faster for this query.
+There is not much to optimize in this query. A simple sequential scan is conducted on the employee table.
 
+\paragraph{Runtime} 
+Both queries return the exact same result since ssnums are unique. The diference in runtime is due to the fact that conducting an index only scan on the unique index simply requires more block accesses than a sequential scan of the table.
 
 \begin{table}[H]
   \begin{tabular}{l|r}
