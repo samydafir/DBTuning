@@ -101,6 +101,7 @@ WHERE e1.dept = t.dept AND e1.salary > e2.avgsalary AND e1.dept = e2.dept;
 \end{verbatim}
 }
 
+\newpage
 \paragraph{Evaluation of the Execution Plans}
 
 Execution plan original query:
@@ -127,7 +128,7 @@ The query consists of a subquery and a main query. the main query iterates over 
 The subquery is executed as follows:
 First a bitmap index scan is is performed on the employee table to get all blocks where employees in the same department as the current employee in the outer query (e1). Next a Bitmap Heap Scan is performed (scan all previously marked blocks) and the selection condition is rechecked on the fly. In the next step an index nested loop join is performed where the index on Techdept.dept is scanned for the every employee in the result of the former step. Finally the average salary of all remaining employees which are all in the same department as e1 i computed. This value is then used for the comparison in the outer query.
 \newpage
-
+\ \\
 Execution plan rewritten query:
 
 \begin{verbatim}
@@ -151,10 +152,10 @@ Aggregate  (cost=4847.34..4847.35 rows=1 width=4)
                                        ->  Seq Scan on employee  
                                        (cost=0.00..1916.00 rows=100000 width=8)
 \end{verbatim}
-
+\ \\
 Give an interpretation of the execution plan, i.e., describe how the
 rewritten query is evaluated.
-
+\\ \\
 The biggest difference between the two queries is the fact that in the original the inner query is executed for every employee whereas in the rewritten one the inner query is executed exactly once and the result is used to in a hash join. This saves huge amounts of time as can be seen in runtime evaluation. apart from that there is no real difference concerning the efficiency of the techniques uses. Both use some linear heap scanning and both also use the index structures to conduct joins. So the main gain concerning execution time is really achieved through unnesting of the correlated inner query.
 
 \paragraph{Runtime} Discuss, why the rewritten query is (or is not)
@@ -170,6 +171,7 @@ faster than the original query.
   \end{tabular}
 \end{table}
 
+\newpage
 \subsection*{Query 2}
 
 \paragraph{Original Query}
@@ -196,26 +198,19 @@ Execution plan original query:
 Unique  (cost=0.29..3799.50 rows=100983 width=4)
    ->  Index Only Scan using ssnume on employee  (cost=0.29..3547.04 rows=100983
 \end{verbatim}
-
-Give an interpretation of the execution plan, i.e., describe how the
-original query is evaluated.
-
+\ \\
+First, the optimizer uses an Index Scan on Employee, which has a Unique Index on ssnum. Afterwards the UNIQUE operator deletes all duplicates, but therefore it needs a sorted row which we got due to the Index Scan.
+\\
+\\
 Execution plan rewritten query:
 
 \begin{verbatim}
 Seq Scan on employee  (cost=0.00..1934.83 rows=100983 width=4)
 \end{verbatim}
-
-Give an interpretation of the execution plan, i.e., describe how the
-rewritten query is evaluated.
-
-Discuss, how the execution plan changed between the original and the
-rewritten query. In both the interpretation of the query plans and the
-discussion focus on the crucial parts, i.e., the parts of the query
-plans that cause major runtime differences.
-
-\paragraph{Runtime} Discuss, why the rewritten query is (or is not)
-faster than the original query.
+\ \\
+For this query a simple sequel scan is executed on Employee.
+\paragraph{Runtime} 
+The big difference between these two queries is the UNIQUE operation. First the row needs to be sorted, and then duplicates needs to be deleted which costs time. In the rewritten query, we know that ssnum is a unique key, which means there are no duplicates and one simple sequel scan is enough and faster for this query.
 
 
 \begin{table}[H]
