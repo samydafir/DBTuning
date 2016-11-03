@@ -37,12 +37,12 @@ Show the query.\footnote{Give the queries for creating a hash index
 
 \smallskip
 
-For creating a clustered index in PostgreSQL you create an index first and cluster this index afterwards with the CLUSTER command:
+To create a clustered index in PostgreSQL you create an index first and cluster this index afterwards with the CLUSTER command:
 
 {\small
 \begin{verbatim}
-CREATE INDEX deptE ON Employee (dept);
-CLUSTER Emlpoyee USING deptE
+CREATE INDEX ssnumE ON Employee (ssnum);
+CLUSTER Emlpoyee USING ssnumE;
 \end{verbatim}
 }
 
