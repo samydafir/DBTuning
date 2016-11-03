@@ -22,12 +22,12 @@
 
 \paragraph{Creating Tables and Indexes}
 
-SQL statements used to create the tables {\tt Employee}, {\tt
-  Student}, and {\tt Techdept}, and the indexes on the tables:
+SQL statements used to create the tables { Employee}, {
+  Student}, and { Techdept}, and the indexes on the tables:
 
 {\small
 \begin{verbatim}
-CREATE TABLE Employee 
+CREATE TABLE Employee
 (
 ssnum integer,
 name character varying,
@@ -41,7 +41,7 @@ CREATE UNIQUE INDEX ssnumE ON Employee (ssnum);
 CREATE UNIQUE INDEX nameE ON Employee (name);
 CREATE INDEX deptE ON Employee (dept);
 
-CREATE TABLE Student 
+CREATE TABLE Student
 (
 ssnum integer,
 name character varying,
@@ -66,8 +66,14 @@ creates implicitly an unique index on dept (according to postgre doc)
 
 \paragraph{Populating the Tables}
 
-How did you fill the tables? What values did you use? Give a short
-description of your program.
+	The tables were populated using the $copy$ command on a tsv-file containing the specified amount of data rows for each table. The files were created with a self-written java program generating values for each entry and inserting them into the corresponding tsv-file.
+	the following values were created:
+
+	\begin{itemize}
+		\item Employee: ssnum: int(0...99999), name: random string of length 20, manager and department: randomly chosen from a 2D array containing (department,manager) pairs, salary: random int value (1000...11000), numfriends: random int (50...520)
+		\item Student:  ssnum: int (100000...199999), name: random string of length 20, course: randomly generated using a letter followed by a digit (260 subjects), grade: random int (1...5).
+		\item Techdept: File was created by hand due to the small number of entries. Corresponds to the values in the other tables.
+	\end{itemize}
 
 \subsection*{Query 1}
 
@@ -89,16 +95,17 @@ AND e2.dept = Techdept.dept);
 {\small
 \begin{verbatim}
 SELECT count(ssnum)
-FROM Techdept t, Employee e1, 
+FROM Techdept t, Employee e1,
 (SELECT dept, AVG(salary) as avgsalary FROM Employee GROUP BY dept) as e2
 WHERE e1.dept = t.dept AND e1.salary > e2.avgsalary AND e1.dept = e2.dept;
 \end{verbatim}
 }
 
+\newpage
 \paragraph{Evaluation of the Execution Plans}
 
 Execution plan original query:
-
+\begin{noindent}
 \begin{verbatim}
 Aggregate  (cost=117285824.33..117285824.34 rows=1 width=4)
    ->  Seq Scan on employee e1  (cost=0.00..117285741.00 rows=33333 width=4)
@@ -106,17 +113,22 @@ Aggregate  (cost=117285824.33..117285824.34 rows=1 width=4)
          SubPlan 1
            ->  Aggregate  (cost=1172.83..1172.84 rows=1 width=5)
                  ->  Nested Loop  (cost=117.23..1159.67 rows=5263 width=5)
-                       ->  Index Only Scan using deptt on techdept  (cost=0.15..8.17 rows=1 width=32)
+                       ->  Index Only Scan using deptt on techdept
+	                        (cost=0.15..8.17 rows=1 width=32)
                              Index Cond: (dept = (e1.dept)::text)
-                       ->  Bitmap Heap Scan on employee e2  (cost=117.08..1098.87 rows=5263 width=8)
+                       ->  Bitmap Heap Scan on employee e2
+	                       (cost=117.08..1098.87 rows=5263 width=8)
                              Recheck Cond: ((dept)::text = (e1.dept)::text)
-                             ->  Bitmap Index Scan on depte  (cost=0.00..115.77 rows=5263 width=0)
+                             ->  Bitmap Index Scan on depte
+	                             (cost=0.00..115.77 rows=5263 width=0)
                                    Index Cond: ((dept)::text = (e1.dept)::text)
 \end{verbatim}
-
-Give an interpretation of the execution plan, i.e., describe how the
-original query is evaluated.
-
+\end{noindent}
+The query consists of a subquery and a main query. the main query iterates over each employee in the employee table and checks if salary is larger than the value returned by the subquery. The plan makes visible the execution of the subquery for each entry in the employee table. In the end an aggregate function is executed giving us the number of all employees earning more than the average salary of their respective department.
+The subquery is executed as follows:
+First a bitmap index scan is performed on the employee table to get all blocks where employees in the same department as the current employee in the outer query (e1). Next a Bitmap Heap Scan is performed (scan all previously marked blocks) and the selection condition is rechecked on the fly. In the next step an index nested loop join is performed where the index on Techdept.dept is scanned for the every employee in the result of the former step. Finally the average salary of all remaining employees which are all in the same department as e1 is computed. This value is then used for the comparison in the outer query.
+\newpage
+\ \\
 Execution plan rewritten query:
 
 \begin{verbatim}
@@ -126,26 +138,27 @@ Aggregate  (cost=4847.34..4847.35 rows=1 width=4)
          Join Filter: (e1.salary > e2.avgsalary)
          ->  Seq Scan on employee e1  (cost=0.00..1916.00 rows=100000 width=12)
          ->  Hash  (cost=2435.66..2435.66 rows=19 width=67)
-               ->  Hash Join  (cost=2416.67..2435.66 rows=19 width=67)
+               ->  Hash Join
+               (cost=2416.67..2435.66 rows=19 width=67)
                      Hash Cond: ((t.dept)::text = (e2.dept)::text)
-                     ->  Seq Scan on techdept t  (cost=0.00..16.40 rows=640 width=32)
+                     ->  Seq Scan on techdept t
+                     (cost=0.00..16.40 rows=640 width=32)
                      ->  Hash  (cost=2416.43..2416.43 rows=19 width=35)
-                           ->  Subquery Scan on e2  (cost=2416.00..2416.43 rows=19 width=35)
-                                 ->  HashAggregate  (cost=2416.00..2416.24 rows=19 width=8)
+                           ->  Subquery Scan on e2
+                           (cost=2416.00..2416.43 rows=19 width=35)
+                                 ->  HashAggregate
+                                 (cost=2416.00..2416.24 rows=19 width=8)
                                        Group Key: employee.dept
-                                       ->  Seq Scan on employee  (cost=0.00..1916.00 rows=100000 width=8)
+                                       ->  Seq Scan on employee
+                                       (cost=0.00..1916.00 rows=100000 width=8)
 \end{verbatim}
+\ \\
+Starting from the bottom of the execution plan:\\
+First of all the inner query is executed. For this, a Seq Scan on employee and a grouping function is used, so we get the employees grouped by their department. Afterwards an aggregate function (the average of the salary) gets executed on the grouped employees, which gives us the average salary for every department. Now a Hash Join is used to join the techdepts (outer query) with their average salary from the inner query. The next step is another Hash Join between employee (outer query; Seq Scan for getting the data) and the results of the previous Hash Join, which ensures that every employee is matched with his department + a Join Filter ensures that the salary of the employee (outer query) is higher than the average salary of his department (inner query). Finally the Count aggregate function is applied to the result of the last Hash Join, which returns our requested result.
+\\ \\
+\paragraph{Runtime}
+The biggest difference between the two queries is the fact that in the original the inner query is executed for every employee whereas in the rewritten one the inner query is executed exactly once and the result is used to in a hash join. This saves huge amounts of time as can be seen in runtime evaluation. Furthermore the reqritten query enables the use of Hash Joins. Apart from that there is no real difference concerning the efficiency of the techniques uses. Both use some linear heap scanning and both also use the index structures to conduct joins. So the main gain concerning execution time is really achieved through unnesting of the correlated inner query.
 
-Give an interpretation of the execution plan, i.e., describe how the
-rewritten query is evaluated.
-
-Discuss, how the execution plan changed between the original and the
-rewritten query. In both the interpretation of the query plans and the
-discussion focus on the crucial parts, i.e., the parts of the query
-plans that cause major runtime differences.
-
-\paragraph{Runtime} Discuss, why the rewritten query is (or is not)
-faster than the original query.
 
 
 \begin{table}[H]
@@ -157,6 +170,7 @@ faster than the original query.
   \end{tabular}
 \end{table}
 
+\newpage
 \subsection*{Query 2}
 
 \paragraph{Original Query}
@@ -183,27 +197,20 @@ Execution plan original query:
 Unique  (cost=0.29..3799.50 rows=100983 width=4)
    ->  Index Only Scan using ssnume on employee  (cost=0.29..3547.04 rows=100983
 \end{verbatim}
-
-Give an interpretation of the execution plan, i.e., describe how the
-original query is evaluated.
-
+\ \\
+The optimizer notices that employee has a unique index on ssnum, so all unique ssnums can be obtained simply by scanning only the index since i contains every unique ssnum in the table.
+\\
+\\
 Execution plan rewritten query:
 
 \begin{verbatim}
 Seq Scan on employee  (cost=0.00..1934.83 rows=100983 width=4)
 \end{verbatim}
+\ \\
+There is not much to optimize in this query. A simple sequential scan is conducted on the employee table.
 
-Give an interpretation of the execution plan, i.e., describe how the
-rewritten query is evaluated.
-
-Discuss, how the execution plan changed between the original and the
-rewritten query. In both the interpretation of the query plans and the
-discussion focus on the crucial parts, i.e., the parts of the query
-plans that cause major runtime differences.
-
-\paragraph{Runtime} Discuss, why the rewritten query is (or is not)
-faster than the original query.
-
+\paragraph{Runtime}
+Both queries return the exact same result since ssnums are unique. The difference in runtime is due to the fact that conducting an index only scan on the unique index simply requires more block accesses than a sequential scan of the table.
 
 \begin{table}[H]
   \begin{tabular}{l|r}
@@ -215,6 +222,6 @@ faster than the original query.
 \end{table}
 
 
-  Time in hours per person: {\bf XXX}
+  Time in hours per person: {\textbf{6 hours}}
 
 \end{document}

@@ -15,7 +15,7 @@ Aggregate  (cost=117285824.33..117285824.34 rows=1 width=4)
 
 
 
-#Query 1 (rewritten) 
+#Query 1 (rewritten)
 95ms
 Aggregate  (cost=4847.34..4847.35 rows=1 width=4)
    ->  Hash Join  (cost=2435.89..4764.01 rows=33333 width=4)
@@ -36,7 +36,7 @@ Aggregate  (cost=4847.34..4847.35 rows=1 width=4)
 #Query 2 (original)
 103ms
 Unique  (cost=0.29..3799.50 rows=100983 width=4)
-   ->  Index Only Scan using ssnume on employee  (cost=0.29..3547.04 rows=100983
+   ->  Index Only Scan using ssnume on employee  (cost=0.29..3547.04 rows=100983 width=4)
 
 #Query 2 (rewritten)
 72ms
