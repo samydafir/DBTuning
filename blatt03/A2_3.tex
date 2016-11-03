@@ -77,9 +77,11 @@ Your answer\dots
 \paragraph{2d)} How does the system deal with overflows in clustered indexes?
 How is the fill factor controlled?
 
-\smallskip
+The system does not resolve overflows at all. If overflows occur the table has to be manually clustered. Order preservation
+can be achieved by setting the fillfactor to a value below 100\%. This enables the insertion of matching new data into pages
+inserted in the ordered structure. The table has to be reclustered.
+https://www.postgresql.org/docs/9.1/static/sql-cluster.html
 
-Your answer\dots
 
 \paragraph{2e)} Discuss any further characteristics of the system
 related to clustered indexes that are relevant to a database
