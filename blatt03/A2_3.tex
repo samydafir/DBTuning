@@ -17,15 +17,14 @@
 \maketitle
 
 \medskip
-
-\noindent\textbf{Database system and version:} {\it e.g., Oracle 12c}
+9.4/static/sql-cluster.html
+\noindent\textbf{Database system and version:} {\it PostgreSQL 9.6.0}
 
 \subsection*{Question 1: Index Data Structures} Which index data structures (e.g., $B^+$-tree
 index) are supported?
 
 \smallskip
 
-Your answer\dots
 B-tree, Hash, GiST, SP-GiST and GIN\\
 https://www.postgresql.org/docs/9.4/static/indexes-types.html
 
@@ -38,11 +37,12 @@ Show the query.\footnote{Give the queries for creating a hash index
 
 \smallskip
 
-Your answer\dots
+For creating a clustered index in PostgreSQL you create an index first and cluster this index afterwards with the CLUSTER command:
 
 {\small
 \begin{verbatim}
-SQL QUERY ...
+CREATE INDEX deptE ON Employee (dept);
+CLUSTER Emlpoyee USING deptE
 \end{verbatim}
 }
 
