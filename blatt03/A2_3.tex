@@ -112,13 +112,16 @@ particular:
 \paragraph{3a)} How do you create a non-clustered index on {\tt
   (dept,salary)}? Show the query.$^1$
 
-\smallskip
-
-Your answer\dots
+In Postgresql all indexes are non-clustered. Clustering has to be done manually.
+Postgres creates all indexes as B+ trees by default. If a hash index is desired it has to be specified in the query.
 
 {\small
 \begin{verbatim}
-SQL QUERY ...
+--creates a $B^+$-tree index
+CREATE INDEX deptSalary ON Employee (dept, salary);
+\\
+--creates a hash index
+CREATE INDEX deptSalary ON Employee USING HASH (dept, salary);
 \end{verbatim}
 }
 
@@ -126,17 +129,17 @@ SQL QUERY ...
 index covers the query, but the condition is not a prefix of the
 attribute sequence {\tt (dept,salary)}?
 
+The system takes advantage of covering indexes if the index covers the query and the condition is a prefix of the attribute sequence. If the condition is not a prefix of the attribute sequence the use of the index depends heavily on the type of query e.g. range queries hardly use the index.
 
-\smallskip
 
-Your answer\dots
 
 \paragraph{3c)} Discuss any further characteristics of the system related to
 non-clustered indexes that are relevant to a database tuner?
 
-\smallskip
+There can be more than one non-clustered index per table.
 
-Your answer\dots
+
+
 
 \subsection*{Question 4: Key Compression and Page Size} If your system
 supports $B^+$-trees, what kind of key compression (if any) does it
