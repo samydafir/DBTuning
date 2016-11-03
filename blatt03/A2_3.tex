@@ -57,15 +57,15 @@ https://www.postgresql.org/docs/9.6/static/sql-cluster.html
 \paragraph{2b)} Are clustered indexes on non-key attributes supported, e.g.,
 on {\tt name}?  Show the query.
 
-\smallskip
+Yes they are supported. In fact postgres supports clustering tables using any attribute used in an index.
+According to Postgres documentation there is no limitation to which index-type can be used.
 
-Your answer\dots
+https://www.postgresql.org/docs/9.1/static/sql-cluster.html
 
-{\small
 \begin{verbatim}
-SQL QUERY ...
+CLUSTER table USING index_name;
 \end{verbatim}
-}
+
 
 \paragraph{2c)} Is the clustered index dense or sparse?
 
