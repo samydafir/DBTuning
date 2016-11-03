@@ -93,9 +93,16 @@ https://www.postgresql.org/docs/9.1/static/sql-createindex.html
 related to clustered indexes that are relevant to a database
 tuner?
 
-\smallskip
+Tables using a clustered index have to be reclustered after every update to ensure they stay clustered.
+If a cluster is in progress an ACCESS EXCLUSIVE lock is acquired meaning no other read or write operation can be executed
+on the table.
+Since clustering a table according to an index sorts the table physically on the index attribute there can only be one clustered index per table.
+Furthermore the $CLUSTER$ instruction is not part of standard SQL but a specific feature of Postgresql.
 
-Your answer\dots
+Clustering can be done using either a sequential table-scan (plus sorting) or an index scan. Both methods require a certain amount of diskspace: tablesize + indexsize for an index scan, double tablesize + indexsize for sequential table-scan.
+The method is selected automatically by the dbs whereas a sequential scan is often faster than an index scan. Due to the disk space requirements for a cluster it is advisable to set the $maintenance work mem$ to a reasonable size.
+
+https://www.postgresql.org/docs/9.1/static/sql-cluster.html
 
 \subsection*{Question 3: Non-Clustered Indexes}
 
