@@ -82,6 +82,12 @@ can be achieved by setting the fillfactor to a value below 100\%. This enables t
 inserted in the ordered structure. The table has to be reclustered.
 https://www.postgresql.org/docs/9.1/static/sql-cluster.html
 
+An index with a specified fillfactor is created as follows:
+\begin{verbatim}
+CREATE UNIQUE INDEX index_title ON table (attribute) WITH (fillfactor = value);
+\end{verbatim}
+https://www.postgresql.org/docs/9.1/static/sql-createindex.html
+
 
 \paragraph{2e)} Discuss any further characteristics of the system
 related to clustered indexes that are relevant to a database
