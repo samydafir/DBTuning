@@ -127,7 +127,7 @@ Postgres creates all indexes as B+ trees by default. If a hash index is desired 
 
 {\small
 \begin{verbatim}
---creates a $B^+$-tree index
+--creates a B+-tree index
 CREATE INDEX deptSalary ON Employee (dept, salary);
 \\
 --creates a hash index
@@ -154,18 +154,15 @@ non-clustered indexes that are relevant to a database tuner?
 \subsection*{Question 4: Key Compression and Page Size} If your system
 supports $B^+$-trees, what kind of key compression (if any) does it
 support?  How large is the default disk page? Can it be changed?
-
+\\
 PostgreSQL does not have key compression in $B^+$-trees.\\
 PostgreSQL uses a fixed page size (commonly 8 kB), and does not allow tuples to span multiple pages, according to its documentation.
 A different page size can be selected when compiling the server.
 \smallskip
 
-Your answer\dots
-
-
 \bigskip
 
-\noindent Time in hours per person: {\bf XXX}
+\noindent Time in hours per person: {\bf 4}
 
 \bigskip
 
