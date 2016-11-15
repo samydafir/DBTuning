@@ -49,10 +49,10 @@ To create a clustered index in PostgreSQL you create an index first and cluster 
 
 {\small
 \begin{verbatim}
---creates a $B^+$-tree index and clusters it
+--creates a B+-tree index and clusters it
 CREATE INDEX ssnumE ON Employee (ssnum);
 CLUSTER Emlpoyee USING ssnumE;
-\\
+
 --creates a hash index and clusters it
 CREATE INDEX ssnumE ON Employee USING HASH (ssnum);
 CLUSTER Emlpoyee USING ssnumE;
