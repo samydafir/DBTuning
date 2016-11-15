@@ -25,8 +25,6 @@
 \subsection*{Question 1: Index Data Structures} Which index data structures (e.g., $B^+$-tree
 index) are supported?
 
-\smallskip
-
 B-tree, Hash, GiST, SP-GiST and GIN
 \footnote{PostgreSQL 9.6
   Documentation, Chapter 11 Indexes,
@@ -76,10 +74,9 @@ CLUSTER table USING index_name;
 
 \paragraph{2c)} Is the clustered index dense or sparse?
 
-
-\smallskip
-
-Your answer\dots
+There is no answer to this question in the Postgres Documentation.
+So we derived a solution which seems logical:
+Every index which we create in Postgres is a non-clustered one, and hence dense\footnote{DB-Tuning Lecture Notes, Index Tuning, Page 17}. With the $CLUSTER$ command we just cluster the existing data to match the index, which only rearranges the data entries and pointers and does not change the type (dense/spares) of the index. So the conclusion is, that the clustered indexes in Postgres are dense.
 
 \paragraph{2d)} How does the system deal with overflows in clustered indexes?
 How is the fill factor controlled?
@@ -121,10 +118,12 @@ Discuss how the system supports non-clustered indexes, in
 particular:
 
 \paragraph{3a)} How do you create a non-clustered index on {\tt
-  (dept,salary)}? Show the query.$^1$
+  (dept,salary)}? Show the query.
 
 In Postgresql all indexes are non-clustered. Clustering has to be done manually.
-Postgres creates all indexes as B+ trees by default. If a hash index is desired it has to be specified in the query.
+Postgres creates all indexes as B+ trees by default. If a hash index is desired it has to be specified in the query\footnote{PostgreSQL 9.6
+  Documentation, SQL Create Index,
+  \url{https://www.postgresql.org/docs/9.6/static/sql-createindex.html}}.
 
 {\small
 \begin{verbatim}
@@ -145,7 +144,11 @@ The system takes advantage of covering indexes if the index covers the query and
 \paragraph{3c)} Discuss any further characteristics of the system related to
 non-clustered indexes that are relevant to a database tuner?
 
-There can be more than one non-clustered index per table.
+\begin{itemize}
+ \item A non-clustered index is the standard index type in Postgres
+ \item There can be more than one non-clustered index per table
+ \item Faster inserts, because the position where the data gets inserted does not matter
+\end{itemize}
 
 \subsection*{Question 4: Key Compression and Page Size} If your system
 supports $B^+$-trees, what kind of key compression (if any) does it
