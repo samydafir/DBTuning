@@ -129,7 +129,7 @@ Postgres creates all indexes as B+ trees by default. If a hash index is desired 
 \begin{verbatim}
 --creates a B+-tree index
 CREATE INDEX deptSalary ON Employee (dept, salary);
-\\
+
 --creates a hash index
 CREATE INDEX deptSalary ON Employee USING HASH (dept, salary);
 \end{verbatim}
