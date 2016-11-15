@@ -148,6 +148,7 @@ non-clustered indexes that are relevant to a database tuner?
  \item A non-clustered index is the standard index type in Postgres
  \item There can be more than one non-clustered index per table
  \item Faster inserts, because the position where the data gets inserted does not matter
+ \item $INCLUDE$ command is available, which enables us to include non-key parameters on the leaf level (not supported in Postgres)
 \end{itemize}
 
 \subsection*{Question 4: Key Compression and Page Size} If your system
