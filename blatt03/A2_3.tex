@@ -1,5 +1,7 @@
 \documentclass[11pt]{scrartcl}
 
+\usepackage{url,float}
+
 \title{
   \textbf{\large Database Tuning -- Assignment 3}\\
   Index Tuning
@@ -25,8 +27,11 @@ index) are supported?
 
 \smallskip
 
-B-tree, Hash, GiST, SP-GiST and GIN\\
-https://www.postgresql.org/docs/9.4/static/indexes-types.html
+B-tree, Hash, GiST, SP-GiST and GIN
+\footnote{PostgreSQL 9.6
+  Documentation, Chapter 11 Indexes,
+  \url{https://www.postgresql.org/docs/9.6/static/indexes-types.html}}
+
 
 \subsection*{Question 2: Clustered Indexes} Discuss how the system
 supports clustered indexes, in particular:
@@ -37,7 +42,12 @@ Show the query.\footnote{Give the queries for creating a hash index
 
 \smallskip
 
-To create a clustered index in PostgreSQL you create an index first and cluster this index afterwards with the CLUSTER command. By default PostgreSQL creates a $B^+$-tree index. If you want a hash index, you have to specify it:
+To create a clustered index in PostgreSQL you create an index first and cluster this index afterwards with the CLUSTER command. By default PostgreSQL creates a $B^+$-tree index. If you want a hash index, you have to specify it:\footnote{PostgreSQL 9.6
+  Documentation, Chapter 11 Indexes,
+  \url{https://www.postgresql.org/docs/9.6/static/indexes-types.html}}
+\footnote{PostgreSQL 9.6
+  Documentation, SQL Cluster,
+  \url{https://www.postgresql.org/docs/9.6/static/sql-cluster.html}}
 
 {\small
 \begin{verbatim}
@@ -51,16 +61,13 @@ CLUSTER Emlpoyee USING ssnumE;
 \end{verbatim}
 }
 
-https://www.postgresql.org/docs/9.6/static/indexes-types.html
-https://www.postgresql.org/docs/9.6/static/sql-cluster.html
-
 \paragraph{2b)} Are clustered indexes on non-key attributes supported, e.g.,
 on {\tt name}?  Show the query.
 
 Yes they are supported. In fact postgres supports clustering tables using any attribute used in an index.
-According to Postgres documentation there is no limitation to which index-type can be used.
-
-https://www.postgresql.org/docs/9.1/static/sql-cluster.html
+According to Postgres documentation there is no limitation to which index-type can be used.\footnote{PostgreSQL 9.6
+  Documentation, SQL Cluster,
+  \url{https://www.postgresql.org/docs/9.6/static/sql-cluster.html}}
 
 \begin{verbatim}
 CLUSTER table USING index_name;
@@ -79,14 +86,18 @@ How is the fill factor controlled?
 
 The system does not resolve overflows at all. If overflows occur the table has to be manually clustered. Order preservation
 can be achieved by setting the fillfactor to a value below 100\%. This enables the insertion of matching new data into pages
-inserted in the ordered structure. The table has to be reclustered.
-https://www.postgresql.org/docs/9.1/static/sql-cluster.html
+inserted in the ordered structure. The table has to be reclustered.\footnote{PostgreSQL 9.6
+  Documentation, SQL Cluster,
+  \url{https://www.postgresql.org/docs/9.6/static/sql-cluster.html}}
 
-An index with a specified fillfactor is created as follows:
+
+An index with a specified fillfactor is created as follows:\footnote{PostgreSQL 9.6
+  Documentation, SQL Create Index,
+  \url{https://www.postgresql.org/docs/9.6/static/sql-createindex.html}}
 \begin{verbatim}
 CREATE UNIQUE INDEX index_title ON table (attribute) WITH (fillfactor = value);
 \end{verbatim}
-https://www.postgresql.org/docs/9.1/static/sql-createindex.html
+
 
 
 \paragraph{2e)} Discuss any further characteristics of the system
@@ -100,9 +111,9 @@ Since clustering a table according to an index sorts the table physically on the
 Furthermore the $CLUSTER$ instruction is not part of standard SQL but a specific feature of Postgresql.
 
 Clustering can be done using either a sequential table-scan (plus sorting) or an index scan. Both methods require a certain amount of diskspace: tablesize + indexsize for an index scan, double tablesize + indexsize for sequential table-scan.
-The method is selected automatically by the dbs whereas a sequential scan is often faster than an index scan. Due to the disk space requirements for a cluster it is advisable to set the $maintenance work mem$ to a reasonable size.
-
-https://www.postgresql.org/docs/9.1/static/sql-cluster.html
+The method is selected automatically by the dbs whereas a sequential scan is often faster than an index scan. Due to the disk space requirements for a cluster it is advisable to set the $maintenance work mem$ to a reasonable size.\footnote{PostgreSQL 9.6
+  Documentation, SQL Cluster,
+  \url{https://www.postgresql.org/docs/9.6/static/sql-cluster.html}}
 
 \subsection*{Question 3: Non-Clustered Indexes}
 
@@ -131,15 +142,10 @@ attribute sequence {\tt (dept,salary)}?
 
 The system takes advantage of covering indexes if the index covers the query and the condition is a prefix of the attribute sequence. If the condition is not a prefix of the attribute sequence the use of the index depends heavily on the type of query e.g. range queries hardly use the index.
 
-
-
 \paragraph{3c)} Discuss any further characteristics of the system related to
 non-clustered indexes that are relevant to a database tuner?
 
 There can be more than one non-clustered index per table.
-
-
-
 
 \subsection*{Question 4: Key Compression and Page Size} If your system
 supports $B^+$-trees, what kind of key compression (if any) does it
