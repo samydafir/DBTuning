@@ -7,6 +7,9 @@ booktitle varchar(132),
 year varchar(4),
 publisher varchar(196)
 );
+CREATE INDEX titleS ON Publ_S (title);
+CLUSTER Publ_S USING titleS;
+DROP INDEX titleS;
 
 CREATE TABLE Publ_B
 (

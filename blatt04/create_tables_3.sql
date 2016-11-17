@@ -7,6 +7,9 @@ booktitle varchar(132),
 year varchar(4),
 publisher varchar(196)
 );
+CREATE INDEX titleS ON Publ_S (title);
+CLUSTER Publ_S USING titleS;
+DROP INDEX titleS;
 
 CREATE TABLE Publ_B
 (
@@ -17,7 +20,7 @@ booktitle varchar(132),
 year varchar(4),
 publisher varchar(196)
 );
-CREATE INDEX booktitleB ON Publ_B (booktitle);
+CREATE INDEX yearB ON Publ_B (year);
 
 CREATE TABLE Publ_CB
 (
@@ -28,8 +31,8 @@ booktitle varchar(132),
 year varchar(4),
 publisher varchar(196)
 );
-CREATE INDEX booktitleCB ON Publ_CB (booktitle);
-CLUSTER Publ_CB USING booktitleCB;
+CREATE INDEX yearCB ON Publ_CB (year);
+CLUSTER Publ_CB USING yearCB;
 
 CREATE TABLE Publ_H
 (
@@ -40,4 +43,4 @@ booktitle varchar(132),
 year varchar(4),
 publisher varchar(196)
 );
-CREATE INDEX booktitleH ON Publ_H USING HASH (booktitle);
+CREATE INDEX yearH ON Publ_H USING HASH (year);
