@@ -19,9 +19,15 @@ public class ThroughputMeasurement {
 		String path = "../";
 		String url = "jdbc:postgresql://" + host + ":" + port + "/" + database;
 
+		HashMap<Integer, String[]> values_all = new HashMap<>();
 		String[] tables = {"Publ_S", "Publ_CB", "Publ_B", "Publ_H"};
-		String[] values = {"'1996'"}; //eintragen
-		String attribute = "year"; //eintragen
+		String[] values_pubid = {"'example'"}; //TODO:eintragen
+		String[] values_booktitle = {"'example'"}; //TODO:eintragen		
+		String[] values_year = {"'1996'"}; //TODO:eintragen
+		String[] attributes = {"pubID", "booktitle", "year"};
+		values_all.put(1, values_pubid);
+		values_all.put(2, values_booktitle);
+		values_all.put(3, values_year);
 
 		BufferedReader credentials = new BufferedReader(new FileReader("credentials.txt"));
 		user = credentials.readLine();
@@ -37,8 +43,8 @@ public class ThroughputMeasurement {
 
 		for (String table: tables) {
 			starttime = System.currentTimeMillis();
-			for (String value: values) {
-				query = "SELECT * FROM " + table + " WHERE " + attribute + " = " + value;
+			for (String value: values_all.get((int) args[1]) {
+				query = "SELECT * FROM " + table + " WHERE " + attributes[((int) args[1]) - 1] + " = " + value;
 				con.createStatement().execute(query);
 			}
 			endtime = System.currentTimeMillis();
