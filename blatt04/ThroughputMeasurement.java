@@ -32,6 +32,7 @@ public class ThroughputMeasurement {
 		con = DriverManager.getConnection(url, user, pwd);
 		Long starttime;
 		Long endtime;
+		String query = "";
 		HashMap<String, Long> runtimes = new HashMap<>();
 
 		for (String table: tables) {
