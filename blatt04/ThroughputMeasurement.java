@@ -20,7 +20,7 @@ public class ThroughputMeasurement {
 		String url = "jdbc:postgresql://" + host + ":" + port + "/" + database;
 
 		String[] tables = {"Publ_S", "Publ_CB", "Publ_B", "Publ_H"};
-		String[] values = {"1996"}; //eintragen
+		String[] values = {"'1996'"}; //eintragen
 		String attribute = "year"; //eintragen
 
 		BufferedReader credentials = new BufferedReader(new FileReader("credentials.txt"));
@@ -46,7 +46,8 @@ public class ThroughputMeasurement {
 		}
 		
 		for(String table: tables) {
-			System.out.print(table + ": " + ( (double) (values.length) / runtimes.get(table) ) * 1000);
+			System.out.println(table + " :" + runtimes.get(table));
+			System.out.println(table + ": " + ( (double) (values.length) / runtimes.get(table) ) * 1000);
 		}
 	}		
 }
