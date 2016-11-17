@@ -3,6 +3,7 @@ import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 
 public class ThroughputMeasurement {
 
@@ -15,6 +16,7 @@ public class ThroughputMeasurement {
 		String database = "dbtuning_ws2016";
 		String pwd = "";
 		String user = "";
+		String path = "../";
 		String url = "jdbc:postgresql://" + host + ":" + port + "/" + database;
 
 		String[] tables = {"Publ_S", "Publ_CB", "Publ_B", "Publ_H"};
@@ -24,14 +26,13 @@ public class ThroughputMeasurement {
 		BufferedReader credentials = new BufferedReader(new FileReader("credentials.txt"));
 		user = credentials.readLine();
 		pwd = credentials.readLine();
-		path = credentials.readLine();
 		credentials.close();
 
 		Connection con = null;
 		con = DriverManager.getConnection(url, user, pwd);
-		long starttime;
-		long endtime;
-		HashMap<String, long> runtimes = new HashMap<>();
+		Long starttime;
+		Long endtime;
+		HashMap<String, Long> runtimes = new HashMap<>();
 
 		for (String table: tables) {
 			starttime = System.currentTimeMillis();
