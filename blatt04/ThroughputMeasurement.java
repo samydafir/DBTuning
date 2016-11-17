@@ -17,7 +17,7 @@ public class ThroughputMeasurement {
 		String user = "";
 		String url = "jdbc:postgresql://" + host + ":" + port + "/" + database;
 
-		final int QUERY_TYPE = 1; // ändern
+		final int QUERY_TYPE = 1; // aendern
 
 		HashMap<Integer, String[]> values_all = new HashMap<>();
 		String[] tables = { "Publ_S", "Publ_CB", "Publ_B", "Publ_H" };
