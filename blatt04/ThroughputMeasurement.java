@@ -77,7 +77,7 @@ public class ThroughputMeasurement {
 
 		String dataRow = TextFile.readLine();
 		while (dataRow != null) {
-			years_list.add(dataRow);
+			years_list.add("'" + dataRow + "'");
 			dataRow = TextFile.readLine(); // Read next line of data.
 		}
 
