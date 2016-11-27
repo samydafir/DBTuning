@@ -57,9 +57,9 @@ public class ThroughputMeasurement {
 		}
 
 		for (String table : tables) {
-			System.out.println(table + " :" + runtimes.get(table));
-			System.out
-					.println(table + ": " + ((double) (values_all.get(queryType).length) / runtimes.get(table)) * 1000);
+			System.out.println("Runtime " + table + ": " + runtimes.get(table));
+			System.out.println("Throughput " + table + ": "
+					+ ((double) (values_all.get(queryType).length) / runtimes.get(table)) * 1000);
 		}
 	}
 
