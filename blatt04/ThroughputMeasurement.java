@@ -20,8 +20,6 @@ public class ThroughputMeasurement {
 
 		int queryType = 1;
 
-		System.out.println("args.length: " + args.length);
-
 		if (args.length > 0) {
 			queryType = Integer.parseInt(args[0]);
 		}
