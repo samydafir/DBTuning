@@ -22,8 +22,8 @@ public class ThroughputMeasurement {
 
 		System.out.println("args.length: " + args.length);
 
-		if (args.length > 1) {
-			queryType = Integer.parseInt(args[1]);
+		if (args.length > 0) {
+			queryType = Integer.parseInt(args[0]);
 		}
 
 		System.out.println("Attribute used for searching: " + queryType);
