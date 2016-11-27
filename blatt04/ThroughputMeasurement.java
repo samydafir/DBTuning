@@ -24,6 +24,8 @@ public class ThroughputMeasurement {
 			queryType = Integer.parseInt(args[1]);
 		}
 
+		System.out.println("Attribute used for searching: " + queryType);
+
 		HashMap<Integer, String[]> values_all = new HashMap<>();
 		String[] tables = { "Publ_S", "Publ_CB", "Publ_B", "Publ_H" };
 		String[] values_pubid = { "'example'" }; // TODO:eintragen
