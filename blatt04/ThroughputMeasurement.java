@@ -59,8 +59,8 @@ public class ThroughputMeasurement {
 		con = DriverManager.getConnection(url, user, pwd);
 		Long starttime;
 		Long endtime;
+		Long runtime;
 		String query = "";
-		HashMap<String, Long> runtimes = new HashMap<>();
 
 		System.out.println("Number of searched values: " + values_all.get(queryType).length);
 
@@ -71,13 +71,10 @@ public class ThroughputMeasurement {
 				con.createStatement().execute(query);
 			}
 			endtime = System.currentTimeMillis();
-			runtimes.put(table, endtime - starttime);
-		}
-
-		for (String table : tables) {
-			System.out.println("Runtime " + table + ": " + runtimes.get(table));
-			System.out.println("Throughput " + table + ": "
-					+ ((double) (values_all.get(queryType).length) / runtimes.get(table)) * 1000);
+			runtime = endtime - starttime;
+			System.out.println("Runtime " + table + ": " + runtime);
+			System.out.println(
+					"Throughput " + table + ": " + ((double) (values_all.get(queryType).length) / runtime) * 1000);
 		}
 	}
 
