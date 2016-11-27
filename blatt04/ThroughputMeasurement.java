@@ -46,6 +46,8 @@ public class ThroughputMeasurement {
 		String query = "";
 		HashMap<String, Long> runtimes = new HashMap<>();
 
+		System.out.println("Number of searched values: " + values_all.get(queryType).length);
+
 		for (String table : tables) {
 			starttime = System.currentTimeMillis();
 			for (String value : values_all.get(queryType)) {
