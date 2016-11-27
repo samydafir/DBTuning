@@ -18,7 +18,7 @@ public class ThroughputMeasurement {
 		String user = "";
 		String url = "jdbc:postgresql://" + host + ":" + port + "/" + database;
 
-		int queryType = 1; // aendern
+		int queryType = 1;
 
 		System.out.println("args.length: " + args.length);
 
@@ -26,7 +26,21 @@ public class ThroughputMeasurement {
 			queryType = Integer.parseInt(args[0]);
 		}
 
-		System.out.println("Attribute used for searching: " + queryType);
+		assert queryType > 0;
+		assert queryType < 4;
+
+		System.out.print("Attribute used for searching: ");
+		switch (queryType) {
+		case 1:
+			System.out.println("pubID");
+			break;
+		case 2:
+			System.out.println("booktitle");
+			break;
+		case 3:
+			System.out.println("years");
+			break;
+		}
 
 		HashMap<Integer, String[]> values_all = new HashMap<>();
 		String[] tables = { "Publ_S", "Publ_CB", "Publ_B", "Publ_H" };
