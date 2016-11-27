@@ -20,6 +20,8 @@ public class ThroughputMeasurement {
 
 		int queryType = 1; // aendern
 
+		System.out.println("args.length: " + args.length);
+
 		if (args.length > 1) {
 			queryType = Integer.parseInt(args[1]);
 		}
