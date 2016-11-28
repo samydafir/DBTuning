@@ -44,7 +44,7 @@ public class ThroughputMeasurement {
 		String[] tables = { "Publ_S", "Publ_CB", "Publ_B", "Publ_H" };
 		String[] values_pubid = { "'example'" }; // TODO:eintragen
 		String[] values_booktitle = { "'example'" }; // TODO:eintragen
-		String[] values_year = getYears();
+		String[] values_year = getData("./years.txt");
 		String[] attributes = { "pubID", "booktitle", "year" };
 		values_all.put(1, values_pubid);
 		values_all.put(2, values_booktitle);
@@ -78,23 +78,22 @@ public class ThroughputMeasurement {
 		}
 	}
 
-	private static String[] getYears() throws Exception {
+	private static String[] getData(String path) throws Exception {
 
-		final String PATH = "./years.txt";
-		ArrayList<String> years_list = new ArrayList<>();
-		BufferedReader TextFile = new BufferedReader(new FileReader(PATH));
+		ArrayList<String> data_list = new ArrayList<>();
+		BufferedReader TextFile = new BufferedReader(new FileReader(path));
 
 		String dataRow = TextFile.readLine();
 		while (dataRow != null) {
-			years_list.add("'" + dataRow + "'");
+			data_list.add("'" + dataRow + "'");
 			dataRow = TextFile.readLine(); // Read next line of data.
 		}
 
 		TextFile.close();
 
-		String[] years = new String[years_list.size()];
-		years = years_list.toArray(years);
+		String[] data = new String[data_list.size()];
+		data = data_list.toArray(data);
 
-		return years;
+		return data;
 	}
 }

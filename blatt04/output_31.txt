@@ -1,0 +1,10 @@
+Attribute used for searching: years
+Number of searched values: 1500
+Runtime Publ_S: 518765
+Throughput Publ_S: 2.8914826559232023
+Runtime Publ_CB: 88765
+Throughput Publ_CB: 16.898552357348056
+Runtime Publ_B: 83948
+Throughput Publ_B: 17.86820412636394
+Runtime Publ_H: 83294
+Throughput Publ_H: 18.00850001200567
