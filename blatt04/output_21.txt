@@ -1,0 +1,11 @@
+Attribute used for searching: booktitle
+Number of searched values: 719
+Runtime Publ_S: 198922
+Throughput Publ_S: 3.6144820582942057
+Runtime Publ_CB: 9366
+Throughput Publ_CB: 76.76702968182789
+Runtime Publ_B: 9916
+Throughput Publ_B: 72.50907624041952
+Runtime Publ_H: 10104
+Throughput Publ_H: 71.159936658749
+

@@ -1,0 +1,24 @@
+Query Plan EXPLAIN SELECT * FROM publ_b WHERE booktitle = 'Software Engineering (Workshops)';
+
+ Index Scan using booktitleb on publ_b  (cost=0.43..577.16 rows=181 width=113)
+   Index Cond: ((booktitle)::text = 'Software Engineering (Workshops)'::text)
+(2 rows)
+
+
+
+Query Plan EXPLAIN SELECT * FROM publ_cb WHERE booktitle = 'Software Engineering (Workshops)';
+
+ Index Scan using booktitlecb on publ_cb  (cost=0.43..14.60 rows=181 width=112)
+   Index Cond: ((booktitle)::text = 'Software Engineering (Workshops)'::text)
+(2 rows)
+
+
+
+Query Plan EXPLAIN SELECT * FROM publ_h WHERE booktitle = 'Software Engineering (Workshops)';
+
+ Bitmap Heap Scan on publ_h  (cost=5.37..668.34 rows=177 width=112)
+   Recheck Cond: ((booktitle)::text = 'Software Engineering (Workshops)'::text)
+   ->  Bitmap Index Scan on booktitleh  (cost=0.00..5.33 rows=177 width=0)
+         Index Cond: ((booktitle)::text = 'Software Engineering (Workshops)'::text)
+(4 rows)
+
