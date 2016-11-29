@@ -125,6 +125,8 @@ Query plan (for one of the queries):
  Execution time: 9.974 ms
 \end{verbatim}
 }
+The DBS uses a bitmap heap scan to get all the blocks which have to be accessed, afterwards the marked blocks get read and returned. This is kind of weird, because the clustering is not used.
+
 \newpage
 \section{Non-Clustered B$^+$-Tree Index}
 
@@ -226,6 +228,7 @@ Query plan (for one of the queries):
  Execution time: 38.380 ms
 \end{verbatim}
 }
+Similiar to the query plan of the clustered B+tree the DBS again uses a bitmap heap scan to find all the blocks which have to be accessed, afterwards the marked blocks get read and returned.
 
 \section{Non-Clustered Hash Index}
 
@@ -328,7 +331,7 @@ Query plan (for one of the queries):
  Execution time: 35.861 ms
 \end{verbatim}
 }
-
+Again we have a bitmap heap scan here, which is very close to the bitmap heap scan used for the non-clustered B+tree.
 
 \section{Table Scan}
 
@@ -424,7 +427,7 @@ Query plan (for one of the queries):
  Execution time: 358.390 ms
 \end{verbatim}
 }
-
+Not much to say about the query plan, obviously the DBS uses a seq scan.
 \section{Discussion}
 
 Give the throughput of the query types and index types in queries/second.
