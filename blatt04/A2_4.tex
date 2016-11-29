@@ -437,10 +437,6 @@ In the statistics of the DBS the variety of values for each attribute is stored.
 Our expectations were, that the clustered B$^+$-tree would be faster than the non-clustered, which only occured on the first multipoint query (booktitle). This might be caused by the fact, that the non-clustered and the clustered B$^+$-tree both use a Bitmap Heap Scan which in our opinion makes no sense for the clustered one.\\
 The differences between the throughput of the different index types of the single point query are in our opinion a little bit to small, because one tree traversel should be more expensive than one hash calculation. With about 20000 queries this should probably sum up to a higher difference. This is true for the other two query types as well. Especially for the (year) multipoint query it is weird that the DBS uses for each index a Bitmap Scan, hence does not take any advantage of the clustering.
 
-Discuss the runtime results for the different index types and the
-table scan. Are the results expected? Why / why not?
-
-
 \bigskip
 
 \noindent Time in hours per person: {\bf XXX}
