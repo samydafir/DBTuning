@@ -80,7 +80,7 @@ We used a equality condition where the index matches a given string from the boo
 
 \smallskip\noindent
 Show the runtime results and compute the throughput.\\
-For the Clustered B$^+$-Tree Index we achieved a runtime from 9366$ms$ to 10196$ms$ with 719 searched values.
+For the Clustered B$^+$-Tree Index we achieved a runtime from 93660$ms$ to 101960$ms$ with 7190 searched values.
 This leads to a throughput of 70,5$\frac{queries}{second}$ to 76,8$\frac{queries}{second}$.\\
 \newpage
 Query plan (for one of the queries):
@@ -175,7 +175,7 @@ We used a equality condition where the index matches a given string from the boo
 
 \smallskip\noindent
 Show the runtime results and compute the throughput.\\
-For the Non-Clustered B$^+$-Tree Index we achieved a runtime from 9916$ms$ to 11347$ms$ with 719 searched values.
+For the Non-Clustered B$^+$-Tree Index we achieved a runtime from 99160$ms$ to 113470$ms$ with 7190 searched values.
 This leads to a throughput of 63,4$\frac{queries}{second}$ to 72,5$\frac{queries}{second}$.\\
 
 \smallskip\noindent
@@ -273,7 +273,7 @@ We used a equality condition where the index matches a given string from the boo
 
 \smallskip\noindent
 Show the runtime results and compute the throughput.\\
-For the Non-Clustered Hash Index we achieved a runtime from 12447$ms$ to 11347$ms$ with 719 searched values.
+For the Non-Clustered Hash Index we achieved a runtime from 124470$ms$ to 113470$ms$ with 7190 searched values.
 This leads to a throughput of 57,8$\frac{queries}{second}$ to 76,9$\frac{queries}{second}$.\\
 
 \smallskip\noindent
@@ -427,6 +427,15 @@ Give the throughput of the query types and index types in queries/second.
 \end{center}
 
 \medskip
+
+\subsection{Table Scan}
+The results for the table scan are as expected for all query types. The database system can obviously not use an index an has to do a sequential scan over the whole table, which is slow, hence the throughput is low.
+\subsection{Index Scans}
+The results of the different index scans were nearly identical for each query type, which we kind of expected because of the low complexity of the queries.\\
+The differences of the throughputs of the different query types were also expected:\\
+In the statistics of the DBS the variety of values for each attribute is stored. The single point query (pubID) returns only one tuple, whereas the multipoint queries have to find and return way more tuples (e.g. years about 12000 tuples), which is more expensive. This explains why the single point query hast the highest throughput and the multipoint query for the year the lowest.\\
+Our expectations were, that the clustered B$^+$-tree would be faster than the non-clustered, which only occured on the first multipoint query (booktitle). This might be caused by the fact, that the non-clustered and the clustered B$^+$-tree both use a Bitmap Heap Scan which in our opinion makes no sense for the clustered one.\\
+The differences between the throughput of the different index types of the single point query are in our opinion a little bit to small, because one tree traversel should be more expensive than one hash calculation. With about 20000 queries this should probably sum up to a higher difference. This is true for the other two query types as well. Especially for the (year) multipoint query it is weird that the DBS uses for each index a Bitmap Scan, hence does not take any advantage of the clustering.
 
 Discuss the runtime results for the different index types and the
 table scan. Are the results expected? Why / why not?
