@@ -91,6 +91,8 @@ EXPLAIN SELECT * FROM publ_cb WHERE booktitle = 'Software Engineering (Workshops
 (2 rows)
 \end{verbatim}
 
+In this execution plan an index scan is used. Due to the sorted attributes the cost are low.
+
 \paragraph{Multipoint Query -- High Selectivity}
 
 Repeat the following query multiple times with different conditions for {\tt year}.
@@ -187,6 +189,8 @@ EXPLAIN SELECT * FROM publ_b WHERE booktitle = 'Software Engineering (Workshops)
    Index Cond: ((booktitle)::text = 'Software Engineering (Workshops)'::text)
 (2 rows)
 \end{verbatim}
+
+This execution plan is almost the same as the one for the Clustered B$^+$-Tree. It also uses an index scan, but the costs are higher.
 
 
 
@@ -389,7 +393,7 @@ EXPLAIN SELECT * FROM publ_s WHERE booktitle = 'Software Engineering (Workshops)
 (2 rows)
 \end{verbatim}
 
-As shown in this query plan, it uses a sequal scan with booktitle on the table which ends in a high runtime.
+As shown in this execution plan, it uses a sequal scan with booktitle on the table which ends in a high runtime.
 
 
 \paragraph{Multipoint Query -- High Selectivity}
