@@ -37,25 +37,30 @@ The time measurement starts before we start sending the queries of one type and 
 
 \paragraph{Point Query}
 
-Repeat the following query multiple times with different conditions for {\tt pubID}.
-
 {\small
 \begin{verbatim}
 SELECT * FROM Publ WHERE pubID = ...
 \end{verbatim}
 }
 
+
+
 \noindent
-Which conditions did you use?
+For this query we created a text file containing about 20000 randomly selected pubids from the publ.tsv file. Queries were then executed for each entry in that file.
 
 \smallskip\noindent
-Show the runtime results and compute the throughput.
+Runtime: 65155ms. \\
+Queries: 19728.
+Throughput: about 302 queries/sec.
 
 \smallskip\noindent
 Query plan (for one of the queries):
 {\small
 \begin{verbatim}
-query plan
+Index Scan using pubidcb on publ_cb  (cost=0.43..8.45 rows=1 width=113) (actual time=0.061..0.061 rows=1 loops=1)
+Index Cond: ((pubid)::text = 'books/idea/encyclopediaDB2005/Manjunath05'::text)
+Planning time: 0.314 ms
+Execution time: 0.079 ms
 \end{verbatim}
 }
 
@@ -128,8 +133,6 @@ before.
 
 \paragraph{Point Query}
 
-Repeat the following query multiple times with different conditions for {\tt pubID}.
-
 {\small
 \begin{verbatim}
 SELECT * FROM Publ WHERE pubID = ...
@@ -137,16 +140,21 @@ SELECT * FROM Publ WHERE pubID = ...
 }
 
 \noindent
-Which conditions did you use?
+For this query we created a text file containing about 20000 randomly selected pubids from the publ.tsv file. Queries were then executed for each entry in that file.
 
 \smallskip\noindent
-Show the runtime results and compute the throughput.
+Runtime: 64573ms. \\
+Queries: 19728.
+Throughput: about 305 queries/sec.
 
 \smallskip\noindent
 Query plan (for one of the queries):
 {\small
 \begin{verbatim}
-query plan
+Index Scan using pubidb on publ_b  (cost=0.43..8.45 rows=1 width=112) (actual time=0.071..0.072 rows=1 loops=1)
+Index Cond: ((pubid)::text = 'books/idea/encyclopediaDB2005/Manjunath05'::text)
+Planning time: 0.405 ms
+Execution time: 0.092 ms
 \end{verbatim}
 }
 
@@ -221,8 +229,6 @@ before.
 
 \paragraph{Point Query}
 
-Repeat the following query multiple times with different conditions for {\tt pubID}.
-
 {\small
 \begin{verbatim}
 SELECT * FROM Publ WHERE pubID = ...
@@ -230,16 +236,21 @@ SELECT * FROM Publ WHERE pubID = ...
 }
 
 \noindent
-Which conditions did you use?
+For this query we created a text file containing about 20000 randomly selected pubids from the publ.tsv file. Queries were then executed for each entry in that file.
 
 \smallskip\noindent
-Show the runtime results and compute the throughput.
+Runtime: 64503ms. \\
+Queries: 19728.
+Throughput: about 305 queries/sec.
 
 \smallskip\noindent
 Query plan (for one of the queries):
 {\small
 \begin{verbatim}
-query plan
+Index Scan using pubidh on publ_h  (cost=0.00..8.02 rows=1 width=113) (actual time=0.037..0.038 rows=1 loops=1)
+Index Cond: ((pubid)::text = 'books/idea/encyclopediaDB2005/Manjunath05'::text)
+Planning time: 0.368 ms
+Execution time: 0.060 ms
 \end{verbatim}
 }
 
@@ -310,8 +321,6 @@ before.
 
 \paragraph{Point Query}
 
-Repeat the following query multiple times with different conditions for {\tt pubID}.
-
 {\small
 \begin{verbatim}
 SELECT * FROM Publ WHERE pubID = ...
@@ -319,10 +328,12 @@ SELECT * FROM Publ WHERE pubID = ...
 }
 
 \noindent
-Which conditions did you use?
+For this query we created a text file containing about 300 randomly selected pubids from the publ.tsv file. Queries were then executed for each entry in that file. The reason we used a different dataset is the enormous amount of time 20000 sequential scan queries would have taken.
 
 \smallskip\noindent
-Show the runtime results and compute the throughput.
+Runtime: 75518ms.\\
+Queries: 297.\\
+Throughput: about 3.9 queries/sec.
 
 \smallskip\noindent
 Query plan (for one of the queries):
@@ -334,8 +345,6 @@ query plan
 
 
 \paragraph{Multipoint Query -- Low Selectivity}
-
-Repeat the following query multiple times with different conditions for {\tt booktitle}.
 
 {\small
 \begin{verbatim}
@@ -365,8 +374,6 @@ EXPLAIN SELECT * FROM publ_s WHERE booktitle = 'Software Engineering (Workshops)
 
 \paragraph{Multipoint Query -- High Selectivity}
 
-Repeat the following query multiple times with different conditions for {\tt year}.
-
 {\small
 \begin{verbatim}
 SELECT * FROM Publ WHERE year = ...
@@ -395,7 +402,7 @@ Give the throughput of the query types and index types in queries/second.
   \begin{tabular}{c|c|c|c|c}
     & clustered & non-clust.\ B$^+$-tree & non-clust.\ hash & table scan \\
     \hline
-    point ({\tt pubID}) & & & \\
+    point ({\tt pubID}) & 302 & 305 & 305 & 3.9 \\
     \hline
     multipoint ({\tt booktitle}) & 73,14 & 69,37 & 69,73 & 3,6\\
     \hline
