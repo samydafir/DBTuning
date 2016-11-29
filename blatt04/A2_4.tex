@@ -30,7 +30,7 @@
 
 \section{Experimental Setup}
 
-We send our queries with a small java program to the database server. The java program was running on the computers of the R\"UR.\\
+We used a small java program to send our queries to the database server. The java program was running on the computers of the R\"UR.\\
 The time measurement starts before we start sending the queries of one type and one table (different tables for different indexes) and stops afterwards. We repeat this for each query type and for each table.
 
 \section{Clustered B$^+$-Tree Index}
@@ -42,8 +42,6 @@ The time measurement starts before we start sending the queries of one type and 
 SELECT * FROM Publ WHERE pubID = ...
 \end{verbatim}
 }
-
-
 
 \noindent
 For this query we created a text file containing about 20000 randomly selected pubids from the publ.tsv file. Queries were then executed for each entry in that file.
@@ -62,6 +60,7 @@ Index Cond: ((pubid)::text = 'books/idea/encyclopediaDB2005/Manjunath05'::text)
 Planning time: 0.314 ms
 Execution time: 0.079 ms
 \end{verbatim}
+An index scan is used to taverse the B$^+$-tree index and fint the tuple wth the specified value of pubId 
 }
 
 \paragraph{Multipoint Query -- Low Selectivity}
@@ -156,6 +155,7 @@ Index Cond: ((pubid)::text = 'books/idea/encyclopediaDB2005/Manjunath05'::text)
 Planning time: 0.405 ms
 Execution time: 0.092 ms
 \end{verbatim}
+Just like in the case of the clustered B$^+$-tree index an index scan is used.
 }
 
 
@@ -254,6 +254,8 @@ Index Cond: ((pubid)::text = 'books/idea/encyclopediaDB2005/Manjunath05'::text)
 Planning time: 0.368 ms
 Execution time: 0.060 ms
 \end{verbatim}
+In this case an index scan is used again which actually means that the hash value of the specified attribute is computed
+and the corresponding bucket is searched for a matching tuple.
 }
 
 
@@ -326,7 +328,7 @@ Query plan (for one of the queries):
 \section{Table Scan}
 
 \noindent \emph{Note:} Make sure the data is not physically ordered by
-the indexed attributes due to the clustering index that you created
+the indexed attributes due to the clustering index that you created.
 before.
 
 \paragraph{Point Query}
@@ -349,8 +351,13 @@ Throughput: about 3.9 queries/sec.
 Query plan (for one of the queries):
 {\small
 \begin{verbatim}
-query plan
+Seq Scan on publ_s  (cost=0.00..37841.18 rows=1 width=113) (actual time=124.918..272.303 rows=1 loops=1)
+Filter: ((pubid)::text = 'books/idea/encyclopediaDB2005/Manjunath05'::text)
+Rows Removed by Filter: 1233213
+Planning time: 0.029 ms
+Execution time: 272.320 ms
 \end{verbatim}
+Since there is no index to be used, the optimizer creates a query plan using a sequential scan.
 }
 
 
@@ -432,9 +439,10 @@ Give the throughput of the query types and index types in queries/second.
 The results for the table scan are as expected for all query types. The database system can obviously not use an index an has to do a sequential scan over the whole table, which is slow, hence the throughput is low.
 \subsection{Index Scans}
 The results of the different index scans were nearly identical for each query type, which we kind of expected because of the low complexity of the queries.\\
-The differences of the throughputs of the different query types were also expected:\\
-In the statistics of the DBS the variety of values for each attribute is stored. The single point query (pubID) returns only one tuple, whereas the multipoint queries have to find and return way more tuples (e.g. years about 12000 tuples), which is more expensive. This explains why the single point query hast the highest throughput and the multipoint query for the year the lowest.\\
-Our expectations were, that the clustered B$^+$-tree would be faster than the non-clustered, which only occured on the first multipoint query (booktitle). This might be caused by the fact, that the non-clustered and the clustered B$^+$-tree both use a Bitmap Heap Scan which in our opinion makes no sense for the clustered one.\\
+The differences of the throughputs of different query types were also expected:\\
+In the statistics of the DBS the variety of values for each attribute is stored. The single point query (pubID) returns only one tuple, whereas the multipoint queries have to find and return way more tuples (e.g. years about 12000 tuples), which is more expensive. This explains why the single point query has the highest throughput and the multipoint query containing year the lowest.\\
+Our expectations were that the clustered B$^+$-tree would be faster than the non-clustered, which only occured on the first multipoint query (booktitle). This might be caused by the fact, that the non-clustered and the clustered B$^+$-tree both use a Bitmap Heap Scan which in our opinion makes no sense for the clustered one.\\
+An explanation for this behaviour would be the amount of tuples returned by each query. In the booktitle-query only a small amount of tuples is returned thus an index scan is much less expensive than a bitmap scan. In the years-query a lot of tuples are returned which actually mean that there is a igh probability that blocks are accessed more than once which makes it far less expensive to conduct a bitmap scan using the index and scanning only marked blocks afterwards.\\ 
 The differences between the throughput of the different index types of the single point query are in our opinion a little bit to small, because one tree traversel should be more expensive than one hash calculation. With about 20000 queries this should probably sum up to a higher difference. This is true for the other two query types as well. Especially for the (year) multipoint query it is weird that the DBS uses for each index a Bitmap Scan, hence does not take any advantage of the clustering.
 
 \bigskip
