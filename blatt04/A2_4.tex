@@ -81,7 +81,7 @@ We used a equality condition where the index matches a given string from the boo
 Show the runtime results and compute the throughput.\\
 For the Clustered B$^+$-Tree Index we achieved a runtime from 93660$ms$ to 101960$ms$ with 7190 searched values.
 This leads to a throughput of 70,5$\frac{queries}{second}$ to 76,8$\frac{queries}{second}$.\\
-\newpage
+
 Query plan (for one of the queries):
 \begin{verbatim}
 EXPLAIN SELECT * FROM publ_cb WHERE booktitle = 'Software Engineering (Workshops)';
@@ -125,7 +125,7 @@ Query plan (for one of the queries):
  Execution time: 9.974 ms
 \end{verbatim}
 }
-
+\newpage
 \section{Non-Clustered B$^+$-Tree Index}
 
 \noindent \emph{Note:} Make sure the data is not physically ordered by
