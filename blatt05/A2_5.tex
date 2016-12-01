@@ -86,9 +86,9 @@ not?
 \begin{tabular}{l|r|r}
   Indexes & Response time Q1 [ms] & Response time Q2 [ms] \\
   \hline
-  no index & ... & ... \\
-  two non-clustering indexes & ... & ... \\
-  two clustering indexes & ... & ...  \\
+  no index & too long & 27886 \\
+  two non-clustering indexes & 37306 & 508 \\
+  two clustering indexes & 18891 & 515  \\
 \end{tabular}
 \end{flushleft}
 
@@ -97,21 +97,103 @@ not?
 \noindent No index (Q1/Q2):
 {\small
 \begin{verbatim}
-query plans (no index)
+Q1:
+Merge Join  (cost=846625.43..906956.29 rows=3095201 width=83)
+   Merge Cond: ((publ.pubid)::text = (auth.pubid)::text)
+   ->  Sort  (cost=285913.35..288996.38 rows=1233214 width=90)
+         Sort Key: publ.pubid
+         ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=90)
+   ->  Materialize  (cost=560711.47..576187.47 rows=3095201 width=38)
+         ->  Sort  (cost=560711.47..568449.47 rows=3095201 width=38)
+               Sort Key: auth.pubid
+               ->  Seq Scan on auth  (cost=0.00..57750.01 rows=3095201 width=38)
+
+Q2:
+Merge Join  (cost=351419.92..357590.96 rows=413 width=68) 
+	    (actual time=24054.639..27857.060 rows=183 loops=1)
+   Merge Cond: ((publ.pubid)::text = (auth.pubid)::text)
+   ->  Sort  (cost=285913.35..288996.38 rows=1233214 width=90) 
+             (actual time=23183.951..26169.586 rows=1229958 loops=1)
+         Sort Key: publ.pubid
+         Sort Method: external merge  Disk: 121400kB
+         ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=90) 
+                               (actual time=0.026..850.908 rows=1233214 loops=1)
+   ->  Sort  (cost=65505.96..65506.99 rows=413 width=23) 
+	     (actual time=519.464..519.550 rows=183 loops=1)
+         Sort Key: auth.pubid
+         Sort Method: quicksort  Memory: 39kB
+         ->  Seq Scan on auth  (cost=0.00..65488.01 rows=413 width=23) 
+                               (actual time=8.420..518.464 rows=183 loops=1)
+               Filter: ((name)::text = 'Divesh Srivastava'::text)
+               Rows Removed by Filter: 3095018
+ Planning time: 0.351 ms
+ Execution time: 27886.590 ms
 \end{verbatim}
 }
 
 \noindent Two non-clustering indexes (Q1/Q2):
 {\small
 \begin{verbatim}
-query plans (two non-clustering indexes)
+Q1:
+Merge Join  (cost=0.86..263625.34 rows=3095201 width=83) 
+            (actual time=0.038..36048.698 rows=3095201 loops=1)
+   Merge Cond: ((publ.pubid)::text = (auth.pubid)::text)
+   ->  Index Scan using pubidpubl on publ  (cost=0.43..73055.43 rows=1233214 width=90) 
+					   (actual time=0.006..6608.030 rows=1233208 loops=1)
+   ->  Index Scan using pubidauth on auth  (cost=0.43..148974.61 rows=3095201 width=38) 
+				           (actual time=0.005..13439.998 rows=3095201 loops=1)
+ Planning time: 0.768 ms
+ Execution time: 37306.638 ms
+
+Q2:
+Merge Join  (cost=65499.99..141460.64 rows=24 width=68) 
+	    (actual time=508.011..508.011 rows=0 loops=1)
+   Merge Cond: ((publ.pubid)::text = (auth.pubid)::text)
+   ->  Index Scan using pubidpubl on publ  (cost=0.43..73055.43 rows=1233214 width=90) 
+					   (actual time=0.006..0.006 rows=1 loops=1)
+   ->  Sort  (cost=65499.56..65499.62 rows=24 width=23) 
+	     (actual time=508.002..508.002 rows=0 loops=1)
+         Sort Key: auth.pubid
+         Sort Method: quicksort  Memory: 25kB
+         ->  Seq Scan on auth  (cost=0.00..65499.01 rows=24 width=23) 
+			       (actual time=507.995..507.995 rows=0 loops=1)
+               Filter: ((name)::text = 'Divesh Srivastav'::text)
+               Rows Removed by Filter: 3095201
+ Planning time: 0.528 ms
+ Execution time: 508.045 ms
 \end{verbatim}
 }
 
 \noindent Two clustering indexes  (Q1/Q2):
 {\small
 \begin{verbatim}
-query plans (two clustering indexes)
+Q1:
+Merge Join  (cost=0.86..263629.21 rows=3095201 width=83) 
+	    (actual time=0.022..17687.042 rows=3095201 loops=1)
+   Merge Cond: ((publ.pubid)::text = (auth.pubid)::text)
+   ->  Index Scan using pubidpubl on publ  (cost=0.43..73057.97 rows=1233214 width=90) 
+					   (actual time=0.005..917.866 rows=1233208 loops=1)
+   ->  Index Scan using pubidauth on auth  (cost=0.43..148975.94 rows=3095201 width=38) 
+					   (actual time=0.004..2033.002 rows=3095201 loops=1)
+ Planning time: 0.606 ms
+ Execution time: 18891.404 ms
+
+Q2:
+Merge Join  (cost=65500.99..141464.18 rows=24 width=68) 
+	    (actual time=515.935..515.935 rows=0 loops=1)
+   Merge Cond: ((publ.pubid)::text = (auth.pubid)::text)
+   ->  Index Scan using pubidpubl on publ  (cost=0.43..73057.97 rows=1233214 width=90) 
+    				           (actual time=0.006..0.006 rows=1 loops=1)
+   ->  Sort  (cost=65500.56..65500.62 rows=24 width=23) 
+	     (actual time=515.926..515.926 rows=0 loops=1)
+         Sort Key: auth.pubid
+         Sort Method: quicksort  Memory: 25kB
+         ->  Seq Scan on auth  (cost=0.00..65500.01 rows=24 width=23) 
+                               (actual time=515.919..515.919 rows=0 loops=1)
+               Filter: ((name)::text = 'Divesh Srivastav'::text)
+               Rows Removed by Filter: 3095201
+ Planning time: 0.535 ms
+ Execution time: 515.970 ms
 \end{verbatim}
 }
 
