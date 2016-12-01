@@ -21,13 +21,13 @@ publisher varchar(196)
 CREATE TABLE Auth
 (
 name varchar(49),
-pubID(129)
+pubID varchar(129)
 );
 
 CREATE TABLE Auth_I
 (
 name varchar(49),
-pubID(129)
+pubID varchar(129)
 );
 
 CREATE INDEX pubIDP ON Publ_I (pubID);
