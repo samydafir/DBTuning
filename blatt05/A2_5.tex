@@ -59,9 +59,9 @@ For the second query we expected a Merge Join, but the system used a Nested Loop
 \begin{tabular}{l|r|r}
   Indexes & Response time Q1 [ms] & Response time Q2 [ms] \\
   \hline
-  index on {\tt Publ.pubID} & ... & ...  \\
-  index on {\tt Auth.pubID} & ... & ... \\
-  index on {\tt Publ.pubID} and {\tt Auth.pubID} & ...& ... \\
+  index on {\tt Publ.pubID} & 98635 & 504  \\
+  index on {\tt Auth.pubID} & 46672 & 193800 \\
+  index on {\tt Publ.pubID} and {\tt Auth.pubID} & 56395 & 511 \\
 \end{tabular}
 \end{flushleft}
 
@@ -70,21 +70,71 @@ For the second query we expected a Merge Join, but the system used a Nested Loop
 \noindent Index on {\tt Publ.pubID} (Q1/Q2):
 {\small
 \begin{verbatim}
-query plans (index on Publ.pubID)
+Q1:
+ Nested Loop  (cost=0.43..1589599.47 rows=3095201 width=82) (actual time=0.088..97373.109 rows=3095201 loops=1)
+   ->  Seq Scan on auth  (cost=0.00..57761.01 rows=3095201 width=38) (actual time=0.012..1694.669 rows=3095201 loops=1)
+   ->  Index Scan using pubidp on publ_i  (cost=0.43..0.48 rows=1 width=89) (actual time=0.028..0.029 rows=1 loops=3095201)
+         Index Cond: ((pubid)::text = (auth.pubid)::text)
+ Planning time: 0.647 ms
+ Execution time: 98634.857 ms
+
+Q2:
+ Nested Loop  (cost=0.43..65701.99 rows=24 width=67) (actual time=309.784..503.737 rows=183 loops=1)
+   ->  Seq Scan on auth  (cost=0.00..65499.01 rows=24 width=23) (actual time=309.720..498.274 rows=183 loops=1)
+         Filter: ((name)::text = 'Divesh Srivastava'::text)
+         Rows Removed by Filter: 3095018
+   ->  Index Scan using pubidp on publ_i  (cost=0.43..8.45 rows=1 width=89) (actual time=0.027..0.028 rows=1 loops=183)
+         Index Cond: ((pubid)::text = (auth.pubid)::text)
+ Planning time: 0.137 ms
+ Execution time: 503.837 ms
 \end{verbatim}
 }
 
 \noindent Index on {\tt Auth.pubID} (Q1/Q2):
 {\small
 \begin{verbatim}
-query plans (index on Auth.pubID)
+Q1:
+ Nested Loop  (cost=0.43..849985.42 rows=3095201 width=82) (actual time=0.066..45483.489 rows=3095201 loops=1)
+   ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=89) (actual time=0.009..703.605 rows=1233214 loops=1)
+   ->  Index Scan using pubida on auth_i  (cost=0.43..0.63 rows=3 width=38) (actual time=0.026..0.033 rows=3 loops=1233214)
+         Index Cond: ((pubid)::text = (publ.pubid)::text)
+ Planning time: 0.432 ms
+ Execution time: 46672.318 ms
+
+Q2:
+ Nested Loop  (cost=0.00..562648.46 rows=25 width=67) (actual time=15405.220..193800.011 rows=183 loops=1)
+   Join Filter: ((auth_i.pubid)::text = (publ.pubid)::text)
+   Rows Removed by Join Filter: 225677979
+   ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=89) (actual time=0.012..689.233 rows=1233214 loops=1)
+   ->  Materialize  (cost=0.00..65499.14 rows=25 width=23) (actual time=0.000..0.071 rows=183 loops=1233214)
+         ->  Seq Scan on auth_i  (cost=0.00..65499.01 rows=25 width=23) (actual time=104.495..507.970 rows=183 loops=1)
+               Filter: ((name)::text = 'Divesh Srivastava'::text)
+               Rows Removed by Filter: 3095018
+ Planning time: 0.135 ms
+ Execution time: 193800.146 ms
 \end{verbatim}
 }
 
 \noindent Index on {\tt Auth.pubID} and {\tt Auth.pubID} (Q1/Q2):
 {\small
 \begin{verbatim}
-query plans (indexes on Publ.pubID and Auth.pubID)
+Q1:
+ Nested Loop  (cost=0.43..850049.42 rows=3095201 width=82) (actual time=0.101..55181.800 rows=3095201 loops=1)
+   ->  Seq Scan on publ_i  (cost=0.00..34758.14 rows=1233214 width=89) (actual time=0.037..721.909 rows=1233214 loops=1)
+   ->  Index Scan using pubida on auth_i  (cost=0.43..0.63 rows=3 width=38) (actual time=0.032..0.041 rows=3 loops=1233214)
+         Index Cond: ((pubid)::text = (publ_i.pubid)::text)
+ Planning time: 0.148 ms
+ Execution time: 56394.801 ms
+
+Q2:
+ Nested Loop  (cost=0.43..65710.45 rows=25 width=67) (actual time=103.244..511.228 rows=183 loops=1)
+   ->  Seq Scan on auth_i  (cost=0.00..65499.01 rows=25 width=23) (actual time=103.176..505.597 rows=183 loops=1)
+         Filter: ((name)::text = 'Divesh Srivastava'::text)
+         Rows Removed by Filter: 3095018
+   ->  Index Scan using pubidp on publ_i  (cost=0.43..8.45 rows=1 width=89) (actual time=0.028..0.029 rows=1 loops=183)
+         Index Cond: ((pubid)::text = (auth_i.pubid)::text)
+ Planning time: 0.181 ms
+ Execution time: 511.343 ms
 \end{verbatim}
 }
 
@@ -223,7 +273,7 @@ Discuss here your observations. Are the response times expected? Why
 \begin{tabular}{l|r|r}
   Indexes & Response time Q1 [ms] & Response time [ms] Q2 \\
   \hline
-  no index & ... & ... \\
+  no index & 9427 & 1668 \\
 \end{tabular}
 \end{flushleft}
 
@@ -232,7 +282,28 @@ Discuss here your observations. Are the response times expected? Why
 \noindent No Index (Q1/Q2):
 {\small
 \begin{verbatim}
-query plans (no index)
+Q1:
+ Hash Join  (cost=68174.32..250399.34 rows=3095201 width=82) (actual time=1834.$
+   Hash Cond: ((auth.pubid)::text = (publ.pubid)::text)
+   ->  Seq Scan on auth  (cost=0.00..57761.01 rows=3095201 width=38) (actual ti$
+   ->  Hash  (cost=34694.14..34694.14 rows=1233214 width=89) (actual time=1833.$
+         Buckets: 4096  Batches: 64  Memory Usage: 2344kB
+         ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=89) (act$
+ Planning time: 0.445 ms
+ Execution time: 9426.895 ms
+
+Q2:
+ Hash Join  (cost=65499.31..140273.15 rows=24 width=67) (actual time=607.564..1$
+   Hash Cond: ((publ.pubid)::text = (auth.pubid)::text)
+   ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=89) (actual ti$
+   ->  Hash  (cost=65499.01..65499.01 rows=24 width=23) (actual time=516.867..5$
+         Buckets: 1024  Batches: 1  Memory Usage: 11kB
+         ->  Seq Scan on auth  (cost=0.00..65499.01 rows=24 width=23) (actual t$
+               Filter: ((name)::text = 'Divesh Srivastava'::text)
+               Rows Removed by Filter: 3095018
+ Planning time: 0.111 ms
+ Execution time: 1667.943 ms
+
 \end{verbatim}
 }
 
