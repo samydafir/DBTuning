@@ -30,15 +30,26 @@ All queries were sent to the database-server (biber) using $psql$ on the compute
 \begin{tabular}{l|l|l}
   Indexes & Join Strategy Q1 & Join Strategy Q2\\
   \hline
-  no index & ... & ...  \\
-  unique non-clustering on {\tt Publ.pubID} & ...  & ... \\
-  clustering on {\tt Publ.pubID} and {\tt Auth.pubID} & ... & ... \\
+  no index & Hash Join & Hash Join  \\
+  unique non-clustering on {\tt Publ.pubID} & Hash Join  & Nested Loop Join \\
+  clustering on {\tt Publ.pubID} and {\tt Auth.pubID} & Merge Join & Nested Loop Join \\
 \end{tabular}
 \end{flushleft}
 
 \paragraph{Discussion}
 Discuss here your observations. Is the choice of the strategy
-expected? How does the system come to this choice?
+expected? How does the system come to this choice?\\
+no index:\\
+For this scenario the proposed join strategies are the expected ones. A hash join is in this case the best choice. For a merge join the tables should be sorted and the nested loop join should be used when there is a small table.\\
+\\
+unique non-clustering on {\tt Publ.pubID}:\\
+For the first query a hash join is the best choice, because of the big, unsorted table of both. For this query the index is of no use.\\
+For the second query a Nested Loop Join is used because first the name from the author must be searched which reduces the table size from $3*10^6$ to $\sim$200. Thereforce the nested loop join is the better choice.\\
+\\
+clustering on {\tt Publ.pubID} and {\tt Auth.pubID}:\\
+For the first query a Merge Join is proposed as expected. The reason therefore is that both tables are sorted to this attribute which is ideal for the Merge Join.\\
+For the second query we expected a Merge Join, but the system used a Nested Loop Join. The Reason therefore is again the table size. First the name is searched in Auth which reduces the size and also "destroys" the ordering. This means that the system would have to sort the values again for the Merge Join although the values are still sorted. And therefore a Nested Loop Join is the best choice.
+
 
 \section{Nested Loop Join}
 
