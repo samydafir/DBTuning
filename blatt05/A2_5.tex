@@ -193,6 +193,10 @@ Merge Join  (cost=351419.92..357590.96 rows=413 width=68)
  Planning time: 0.351 ms
  Execution time: 27886.590 ms
 \end{verbatim}
+Naturally, if there are no indexes present on the merge-attributes, both relations have to be sorted on the merge-attribute. This takes place in the execution of both queries.
+In Query 1 we see a sorting of both relations followed by a merge-join on the specified attribute (The Query took extremely long, so the execution was stopped).
+query 2 is much faster since first a selection is consucted using a linear scan since there is no index on name. After that both relations are again sorted which is a lot faster
+since the second only contains publications by one author. Just like in query 1 the system then uses a merge-join to get the result.
 }
 
 \noindent Two non-clustering indexes (Q1/Q2):
@@ -226,6 +230,12 @@ Merge Join  (cost=65499.99..141460.64 rows=24 width=68)
  Planning time: 0.528 ms
  Execution time: 508.045 ms
 \end{verbatim}
+In this case although we do not have physical sorting of the data itself, we can use the index (always sorted) to access the tables. This eliminates the need for sorting.
+In query 1 we see that sorting has completely been removed. The system uses both non-clustering indexes to conduct a merge-join. This of course speeds up the query dramatically.
+In query 2 we still see some sorting which is only due to the fact that the result eturned by the sequential scan (selection of name) can not be assumed to be sorted. However this sort
+is only carried out on a small amount of tuples. afterwards the merge-join is executed using the index of the first elation and the sorted second relation.
+This method is still not optimal since only the index is sorted whereas the actual tupes are still spread out across the disk which means that tuples with the similar attribute-values are not necessaily
+close to each other. This prohibits the system from performing sequential reads which slows down query execution compared to a clustering index.
 }
 
 \noindent Two clustering indexes  (Q1/Q2):
@@ -259,11 +269,19 @@ Merge Join  (cost=65500.99..141464.18 rows=24 width=68)
  Planning time: 0.535 ms
  Execution time: 515.970 ms
 \end{verbatim}
+The increase in execution-speed cannot be explained by looking at the query plans alone since the look exactly the same as the ones in the non-clustered example. However the situation is a little different.
+Since there are clusteringindexes on both relations they are of course physically sorted on the disk. Execution of both queries is exactly the same as in the previous example.
+The queries aresped up since the physical sorted tuples can now be sequentially read from the disk, which gives a pretty significant speed boost as can be notced by comparing the execution durations.
 }
 
 \paragraph{Discussion}
-Discuss here your observations. Are the response times expected? Why
-/ why not? 
+The observations as already discussed for each query plan were all as expected. Using a merge join when there are no indexes present is of course extremely slow due to both relations having to be physically sorted.
+A non-clustering index speeds things up since no more sorting is required. Tuples can be accessed through the index however sequential disk-read is not possible.
+Finally using two clustered indexes eliminates the need for sorting and sequential disk-reads can be used. Looking at the first query we see huge gains in execution time due to the factors previously explained.
+The second query is also hugely sped up by the use of indexes vs no index. However there is not a large difference in execution time between using clustering and non-clustering indexes. Since this is not the case
+in query 1 is has to be caused by the selection. After the selection the system can no longer use the index on the second relation and has to sort the result of the selection.
+This part is the same in both cases (clustering/non-clustering). So it is likely that the sequential scan and following sort dominate the execution time and the differende between seuqential- and random-read of the first
+relation does not have a big impact.
 
 \section{Hash Join}
 
@@ -305,6 +323,7 @@ Q2:
  Execution time: 1667.943 ms
 
 \end{verbatim}
+
 }
 
 \paragraph{Discussion}
