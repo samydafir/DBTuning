@@ -19,7 +19,7 @@ A2\\
 \begin{document}
 
 \maketitle
-\section{setup}
+\section{Setup}
 All queries were sent to the database-server (biber) using $psql$ on the computers of the R\"UR.
 
 \section{Join Strategies Proposed by System}
@@ -71,22 +71,29 @@ For the second query we expected a Merge Join, but the system used a Nested Loop
 {\small
 \begin{verbatim}
 Q1:
- Nested Loop  (cost=0.43..1589599.47 rows=3095201 width=82) (actual time=0.088..97373.109 rows=3095201 loops=1)
-   ->  Seq Scan on auth  (cost=0.00..57761.01 rows=3095201 width=38) (actual time=0.012..1694.669 rows=3095201 loops=1)
-   ->  Index Scan using pubidp on publ_i  (cost=0.43..0.48 rows=1 width=89) (actual time=0.028..0.029 rows=1 loops=3095201)
+ Nested Loop  (cost=0.43..1589599.47 rows=3095201 width=82) 
+ (actual time=0.088..97373.109 rows=3095201 loops=1)
+   ->  Seq Scan on auth  (cost=0.00..57761.01 rows=3095201 width=38) 
+       (actual time=0.012..1694.669 rows=3095201 loops=1)
+   ->  Index Scan using pubidp on publ_i  (cost=0.43..0.48 rows=1 width=89) 
+       (actual time=0.028..0.029 rows=1 loops=3095201)
          Index Cond: ((pubid)::text = (auth.pubid)::text)
  Planning time: 0.647 ms
  Execution time: 98634.857 ms
 
 Q2:
- Nested Loop  (cost=0.43..65701.99 rows=24 width=67) (actual time=309.784..503.737 rows=183 loops=1)
-   ->  Seq Scan on auth  (cost=0.00..65499.01 rows=24 width=23) (actual time=309.720..498.274 rows=183 loops=1)
+ Nested Loop  (cost=0.43..65701.99 rows=24 width=67) 
+ (actual time=309.784..503.737 rows=183 loops=1)
+   ->  Seq Scan on auth  (cost=0.00..65499.01 rows=24 width=23) 
+       (actual time=309.720..498.274 rows=183 loops=1)
          Filter: ((name)::text = 'Divesh Srivastava'::text)
          Rows Removed by Filter: 3095018
-   ->  Index Scan using pubidp on publ_i  (cost=0.43..8.45 rows=1 width=89) (actual time=0.027..0.028 rows=1 loops=183)
+   ->  Index Scan using pubidp on publ_i  (cost=0.43..8.45 rows=1 width=89) 
+       (actual time=0.027..0.028 rows=1 loops=183)
          Index Cond: ((pubid)::text = (auth.pubid)::text)
  Planning time: 0.137 ms
  Execution time: 503.837 ms
+
 \end{verbatim}
 }
 
@@ -301,22 +308,30 @@ relation does not have a big impact.
 {\small
 \begin{verbatim}
 Q1:
- Hash Join  (cost=68174.32..250399.34 rows=3095201 width=82) (actual time=1834.$
+ Hash Join  (cost=68174.32..250399.34 rows=3095201 width=82) 
+ (actual time=1834.128..8248.005 rows=3095201 loops=1)
    Hash Cond: ((auth.pubid)::text = (publ.pubid)::text)
-   ->  Seq Scan on auth  (cost=0.00..57761.01 rows=3095201 width=38) (actual ti$
-   ->  Hash  (cost=34694.14..34694.14 rows=1233214 width=89) (actual time=1833.$
+   ->  Seq Scan on auth  (cost=0.00..57761.01 rows=3095201 width=38)
+       (actual time=0.011..1413.767 rows=3095201 loops=1)
+   ->  Hash  (cost=34694.14..34694.14 rows=1233214 width=89) 
+       (actual time=1833.830..1833.830 rows=1233214 loops=1)
          Buckets: 4096  Batches: 64  Memory Usage: 2344kB
-         ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=89) (act$
+         ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=89)
+             (actual time=0.042..790.847 rows=1233214 loops=1)
  Planning time: 0.445 ms
  Execution time: 9426.895 ms
 
 Q2:
- Hash Join  (cost=65499.31..140273.15 rows=24 width=67) (actual time=607.564..1$
+ Hash Join  (cost=65499.31..140273.15 rows=24 width=67) 
+ (actual time=607.564..1667.832 rows=183 loops=1)
    Hash Cond: ((publ.pubid)::text = (auth.pubid)::text)
-   ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=89) (actual ti$
-   ->  Hash  (cost=65499.01..65499.01 rows=24 width=23) (actual time=516.867..5$
+   ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=89) 
+       (actual time=0.045..592.658 rows=1233214 loops=1)
+   ->  Hash  (cost=65499.01..65499.01 rows=24 width=23) 
+       (actual time=516.867..516.867 rows=183 loops=1)
          Buckets: 1024  Batches: 1  Memory Usage: 11kB
-         ->  Seq Scan on auth  (cost=0.00..65499.01 rows=24 width=23) (actual t$
+         ->  Seq Scan on auth  (cost=0.00..65499.01 rows=24 width=23) 
+             (actual time=321.786..516.733 rows=183 loops=1)
                Filter: ((name)::text = 'Divesh Srivastava'::text)
                Rows Removed by Filter: 3095018
  Planning time: 0.111 ms
