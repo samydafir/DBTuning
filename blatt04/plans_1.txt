@@ -1,0 +1,24 @@
+Seq Scan on publ_s  (cost=0.00..37841.18 rows=1 width=113) (actual time=124.918..272.303 rows=1 loops=1)
+   Filter: ((pubid)::text = 'books/idea/encyclopediaDB2005/Manjunath05'::text)
+   Rows Removed by Filter: 1233213
+ Planning time: 0.029 ms
+ Execution time: 272.320 ms
+
+
+ Index Scan using pubidb on publ_b  (cost=0.43..8.45 rows=1 width=112) (actual time=0.071..0.072 rows=1 loops=1)
+   Index Cond: ((pubid)::text = 'books/idea/encyclopediaDB2005/Manjunath05'::text)
+ Planning time: 0.405 ms
+ Execution time: 0.092 ms
+
+
+Index Scan using pubidcb on publ_cb  (cost=0.43..8.45 rows=1 width=113) (actual time=0.061..0.061 rows=1 loops=1)
+   Index Cond: ((pubid)::text = 'books/idea/encyclopediaDB2005/Manjunath05'::text)
+ Planning time: 0.314 ms
+ Execution time: 0.079 ms
+
+
+
+Index Scan using pubidh on publ_h  (cost=0.00..8.02 rows=1 width=113) (actual time=0.037..0.038 rows=1 loops=1)
+   Index Cond: ((pubid)::text = 'books/idea/encyclopediaDB2005/Manjunath05'::text)
+ Planning time: 0.368 ms
+ Execution time: 0.060 ms

@@ -1,0 +1,81 @@
+Query Plan:
+
+EXPLAIN SELECT * FROM publ_b WHERE booktitle = 'Software Engineering (Workshops)';
+
+ Index Scan using booktitleb on publ_b  (cost=0.43..577.16 rows=181 width=113)
+   Index Cond: ((booktitle)::text = 'Software Engineering (Workshops)'::text)
+(2 rows)
+
+
+EXPLAIN ANALYZE SELECT * FROM publ_b WHERE booktitle = 'Software Engineering (Workshops)';
+
+ Index Scan using booktitleb on publ_b  (cost=0.43..577.16 rows=181 width=113) (actual time=0.060..0.140 rows=137 loops=1)
+   Index Cond: ((booktitle)::text = 'Software Engineering (Workshops)'::text)
+ Planning time: 0.614 ms
+ Execution time: 0.226 ms
+(4 rows)
+
+
+
+Query Plan 
+
+EXPLAIN SELECT * FROM publ_cb WHERE booktitle = 'Software Engineering (Workshops)';
+
+ Index Scan using booktitlecb on publ_cb  (cost=0.43..14.60 rows=181 width=112)
+   Index Cond: ((booktitle)::text = 'Software Engineering (Workshops)'::text)
+(2 rows)
+
+
+EXPLAIN ANALYZE SELECT * FROM publ_cb WHERE booktitle = 'Software Engineering (Workshops)';
+
+ Index Scan using booktitlecb on publ_cb  (cost=0.43..14.60 rows=181 width=112) (actual time=0.115..0.232 rows=137 loops=1)
+   Index Cond: ((booktitle)::text = 'Software Engineering (Workshops)'::text)
+ Planning time: 0.288 ms
+ Execution time: 0.314 ms
+(4 rows)
+
+
+
+
+Query Plan 
+
+EXPLAIN SELECT * FROM publ_h WHERE booktitle = 'Software Engineering (Workshops)';
+
+ Bitmap Heap Scan on publ_h  (cost=5.37..668.34 rows=177 width=112)
+   Recheck Cond: ((booktitle)::text = 'Software Engineering (Workshops)'::text)
+   ->  Bitmap Index Scan on booktitleh  (cost=0.00..5.33 rows=177 width=0)
+         Index Cond: ((booktitle)::text = 'Software Engineering (Workshops)'::text)
+(4 rows)
+
+
+EXPLAIN ANALYZE SELECT * FROM publ_h WHERE booktitle = 'Software Engineering (Workshops)';
+
+ Bitmap Heap Scan on publ_h  (cost=5.37..668.34 rows=177 width=112) (actual time=0.084..0.192 rows=137 loops=1)
+   Recheck Cond: ((booktitle)::text = 'Software Engineering (Workshops)'::text)
+   Heap Blocks: exact=6
+   ->  Bitmap Index Scan on booktitleh  (cost=0.00..5.33 rows=177 width=0) (actual time=0.065..0.065 rows=137 loops=1)
+         Index Cond: ((booktitle)::text = 'Software Engineering (Workshops)'::text)
+ Planning time: 0.324 ms
+ Execution time: 0.264 ms
+(7 rows)
+
+
+
+Query Plan 
+
+EXPLAIN SELECT * FROM publ_s WHERE booktitle = 'Software Engineering (Workshops)';
+
+ Seq Scan on publ_s  (cost=0.00..37843.18 rows=179 width=112)
+   Filter: ((booktitle)::text = 'Software Engineering (Workshops)'::text)
+(2 rows)
+
+
+EXPLAIN ANALYZE SELECT * FROM publ_s WHERE booktitle = 'Software Engineering (Workshops)';
+
+ Seq Scan on publ_s  (cost=0.00..37843.18 rows=179 width=112) (actual time=144.221..274.379 rows=137 loops=1)
+   Filter: ((booktitle)::text = 'Software Engineering (Workshops)'::text)
+   Rows Removed by Filter: 1233077
+ Planning time: 0.185 ms
+ Execution time: 274.462 ms
+(5 rows)
+

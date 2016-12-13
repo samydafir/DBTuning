@@ -1,0 +1,9 @@
+Runtime Publ_S: 75518
+Throughput Publ_S: 3.9328372043751156
+Runtime Publ_CB: 65155
+Throughput Publ_CB: 302.78566495280484
+Runtime Publ_B: 64573
+Throughput Publ_B: 305.5146888018212
+Runtime Publ_H: 64503
+Throughput Publ_H: 305.84623970978095
+

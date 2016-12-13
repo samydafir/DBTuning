@@ -1,0 +1,86 @@
+SET
+SET
+SET
+ enable_mergejoin 
+------------------
+ off
+(1 row)
+
+ enable_hashjoin 
+-----------------
+ off
+(1 row)
+
+ enable_nestloop 
+-----------------
+ on
+(1 row)
+
+                                                         QUERY PLAN                                                         
+----------------------------------------------------------------------------------------------------------------------------
+ Nested Loop  (cost=0.43..1589599.47 rows=3095201 width=82) (actual time=0.088..97373.109 rows=3095201 loops=1)
+   ->  Seq Scan on auth  (cost=0.00..57761.01 rows=3095201 width=38) (actual time=0.012..1694.669 rows=3095201 loops=1)
+   ->  Index Scan using pubidp on publ_i  (cost=0.43..0.48 rows=1 width=89) (actual time=0.028..0.029 rows=1 loops=3095201)
+         Index Cond: ((pubid)::text = (auth.pubid)::text)
+ Planning time: 0.647 ms
+ Execution time: 98634.857 ms
+(6 rows)
+
+                                                       QUERY PLAN                                                       
+------------------------------------------------------------------------------------------------------------------------
+ Nested Loop  (cost=0.43..65701.99 rows=24 width=67) (actual time=309.784..503.737 rows=183 loops=1)
+   ->  Seq Scan on auth  (cost=0.00..65499.01 rows=24 width=23) (actual time=309.720..498.274 rows=183 loops=1)
+         Filter: ((name)::text = 'Divesh Srivastava'::text)
+         Rows Removed by Filter: 3095018
+   ->  Index Scan using pubidp on publ_i  (cost=0.43..8.45 rows=1 width=89) (actual time=0.027..0.028 rows=1 loops=183)
+         Index Cond: ((pubid)::text = (auth.pubid)::text)
+ Planning time: 0.137 ms
+ Execution time: 503.837 ms
+(8 rows)
+
+                                                         QUERY PLAN                                                         
+----------------------------------------------------------------------------------------------------------------------------
+ Nested Loop  (cost=0.43..849985.42 rows=3095201 width=82) (actual time=0.066..45483.489 rows=3095201 loops=1)
+   ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=89) (actual time=0.009..703.605 rows=1233214 loops=1)
+   ->  Index Scan using pubida on auth_i  (cost=0.43..0.63 rows=3 width=38) (actual time=0.026..0.033 rows=3 loops=1233214)
+         Index Cond: ((pubid)::text = (publ.pubid)::text)
+ Planning time: 0.432 ms
+ Execution time: 46672.318 ms
+(6 rows)
+
+                                                       QUERY PLAN                                                       
+------------------------------------------------------------------------------------------------------------------------
+ Nested Loop  (cost=0.00..562648.46 rows=25 width=67) (actual time=15405.220..193800.011 rows=183 loops=1)
+   Join Filter: ((auth_i.pubid)::text = (publ.pubid)::text)
+   Rows Removed by Join Filter: 225677979
+   ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=89) (actual time=0.012..689.233 rows=1233214 loops=1)
+   ->  Materialize  (cost=0.00..65499.14 rows=25 width=23) (actual time=0.000..0.071 rows=183 loops=1233214)
+         ->  Seq Scan on auth_i  (cost=0.00..65499.01 rows=25 width=23) (actual time=104.495..507.970 rows=183 loops=1)
+               Filter: ((name)::text = 'Divesh Srivastava'::text)
+               Rows Removed by Filter: 3095018
+ Planning time: 0.135 ms
+ Execution time: 193800.146 ms
+(10 rows)
+
+                                                         QUERY PLAN                                                         
+----------------------------------------------------------------------------------------------------------------------------
+ Nested Loop  (cost=0.43..850049.42 rows=3095201 width=82) (actual time=0.101..55181.800 rows=3095201 loops=1)
+   ->  Seq Scan on publ_i  (cost=0.00..34758.14 rows=1233214 width=89) (actual time=0.037..721.909 rows=1233214 loops=1)
+   ->  Index Scan using pubida on auth_i  (cost=0.43..0.63 rows=3 width=38) (actual time=0.032..0.041 rows=3 loops=1233214)
+         Index Cond: ((pubid)::text = (publ_i.pubid)::text)
+ Planning time: 0.148 ms
+ Execution time: 56394.801 ms
+(6 rows)
+
+                                                       QUERY PLAN                                                       
+------------------------------------------------------------------------------------------------------------------------
+ Nested Loop  (cost=0.43..65710.45 rows=25 width=67) (actual time=103.244..511.228 rows=183 loops=1)
+   ->  Seq Scan on auth_i  (cost=0.00..65499.01 rows=25 width=23) (actual time=103.176..505.597 rows=183 loops=1)
+         Filter: ((name)::text = 'Divesh Srivastava'::text)
+         Rows Removed by Filter: 3095018
+   ->  Index Scan using pubidp on publ_i  (cost=0.43..8.45 rows=1 width=89) (actual time=0.028..0.029 rows=1 loops=183)
+         Index Cond: ((pubid)::text = (auth_i.pubid)::text)
+ Planning time: 0.181 ms
+ Execution time: 511.343 ms
+(8 rows)
+

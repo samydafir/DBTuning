@@ -1,0 +1,42 @@
+                                                  QUERY PLAN                                                  
+--------------------------------------------------------------------------------------------------------------
+ Seq Scan on publ_s  (cost=0.00..37777.18 rows=2224 width=112) (actual time=0.041..354.600 rows=9182 loops=1)
+   Filter: ((year)::text = '1986'::text)
+   Rows Removed by Filter: 1224032
+ Planning time: 0.746 ms
+ Execution time: 358.390 ms
+(5 rows)
+
+                                                      QUERY PLAN                                                      
+----------------------------------------------------------------------------------------------------------------------
+ Bitmap Heap Scan on publ_cb  (cost=45.98..6695.42 rows=2265 width=112) (actual time=1.081..6.685 rows=9182 loops=1)
+   Recheck Cond: ((year)::text = '1986'::text)
+   Heap Blocks: exact=160
+   ->  Bitmap Index Scan on yearcb  (cost=0.00..45.41 rows=2265 width=0) (actual time=1.049..1.049 rows=9182 loops=1)
+         Index Cond: ((year)::text = '1986'::text)
+ Planning time: 0.484 ms
+ Execution time: 9.974 ms
+(7 rows)
+
+                                                     QUERY PLAN                                                      
+---------------------------------------------------------------------------------------------------------------------
+ Bitmap Heap Scan on publ_b  (cost=55.01..7010.65 rows=2398 width=112) (actual time=2.148..34.510 rows=9182 loops=1)
+   Recheck Cond: ((year)::text = '1986'::text)
+   Heap Blocks: exact=3258
+   ->  Bitmap Index Scan on yearb  (cost=0.00..54.41 rows=2398 width=0) (actual time=1.620..1.620 rows=9182 loops=1)
+         Index Cond: ((year)::text = '1986'::text)
+ Planning time: 0.301 ms
+ Execution time: 38.380 ms
+(7 rows)
+
+                                                     QUERY PLAN                                                      
+---------------------------------------------------------------------------------------------------------------------
+ Bitmap Heap Scan on publ_h  (cost=68.65..6436.08 rows=2149 width=113) (actual time=2.409..32.008 rows=9182 loops=1)
+   Recheck Cond: ((year)::text = '1986'::text)
+   Heap Blocks: exact=3258
+   ->  Bitmap Index Scan on yearh  (cost=0.00..68.12 rows=2149 width=0) (actual time=1.824..1.824 rows=9182 loops=1)
+         Index Cond: ((year)::text = '1986'::text)
+ Planning time: 0.346 ms
+ Execution time: 35.861 ms
+(7 rows)
+
