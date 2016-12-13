@@ -358,6 +358,10 @@ Q2:
 
 \paragraph{Discussion}
 
+About the query plans:
+Q1 uses publ as build input as expected, because it is the relation with less tuple.
+In the case of Q2 the DBS uses auth as build input, because after the selection (name = 'Divesh Srivastava') the rest of auth is smaller than publ.
+
 What do you think about the response time of the hash index vs.\ the
 response times of sort-merge and index nested loop join for each of
 the queries? Explain.
