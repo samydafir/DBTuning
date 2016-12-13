@@ -65,30 +65,30 @@ For the second query we expected a Merge Join, but the system used a Nested Loop
 \end{tabular}
 \end{flushleft}
 
-\paragraph{Query plans}\mbox{}\\ 
+\paragraph{Query plans}\mbox{}\\
 
 \noindent Index on {\tt Publ.pubID} (Q1/Q2):
 {\small
 \begin{verbatim}
 Q1:
- Nested Loop  (cost=0.43..1589599.47 rows=3095201 width=82) 
+ Nested Loop  (cost=0.43..1589599.47 rows=3095201 width=82)
  (actual time=0.088..97373.109 rows=3095201 loops=1)
-   ->  Seq Scan on auth  (cost=0.00..57761.01 rows=3095201 width=38) 
+   ->  Seq Scan on auth  (cost=0.00..57761.01 rows=3095201 width=38)
        (actual time=0.012..1694.669 rows=3095201 loops=1)
-   ->  Index Scan using pubidp on publ_i  (cost=0.43..0.48 rows=1 width=89) 
+   ->  Index Scan using pubidp on publ_i  (cost=0.43..0.48 rows=1 width=89)
        (actual time=0.028..0.029 rows=1 loops=3095201)
          Index Cond: ((pubid)::text = (auth.pubid)::text)
  Planning time: 0.647 ms
  Execution time: 98634.857 ms
 
 Q2:
- Nested Loop  (cost=0.43..65701.99 rows=24 width=67) 
+ Nested Loop  (cost=0.43..65701.99 rows=24 width=67)
  (actual time=309.784..503.737 rows=183 loops=1)
-   ->  Seq Scan on auth  (cost=0.00..65499.01 rows=24 width=23) 
+   ->  Seq Scan on auth  (cost=0.00..65499.01 rows=24 width=23)
        (actual time=309.720..498.274 rows=183 loops=1)
          Filter: ((name)::text = 'Divesh Srivastava'::text)
          Rows Removed by Filter: 3095018
-   ->  Index Scan using pubidp on publ_i  (cost=0.43..8.45 rows=1 width=89) 
+   ->  Index Scan using pubidp on publ_i  (cost=0.43..8.45 rows=1 width=89)
        (actual time=0.027..0.028 rows=1 loops=183)
          Index Cond: ((pubid)::text = (auth.pubid)::text)
  Planning time: 0.137 ms
@@ -101,26 +101,26 @@ Q2:
 {\small
 \begin{verbatim}
 Q1:
- Nested Loop  (cost=0.43..849985.42 rows=3095201 width=82) 
+ Nested Loop  (cost=0.43..849985.42 rows=3095201 width=82)
  (actual time=0.066..45483.489 rows=3095201 loops=1)
-   ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=89) 
+   ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=89)
        (actual time=0.009..703.605 rows=1233214 loops=1)
-   ->  Index Scan using pubida on auth_i  (cost=0.43..0.63 rows=3 width=38) 
+   ->  Index Scan using pubida on auth_i  (cost=0.43..0.63 rows=3 width=38)
        (actual time=0.026..0.033 rows=3 loops=1233214)
          Index Cond: ((pubid)::text = (publ.pubid)::text)
  Planning time: 0.432 ms
  Execution time: 46672.318 ms
 
 Q2:
- Nested Loop  (cost=0.00..562648.46 rows=25 width=67) 
+ Nested Loop  (cost=0.00..562648.46 rows=25 width=67)
  (actual time=15405.220..193800.011 rows=183 loops=1)
    Join Filter: ((auth_i.pubid)::text = (publ.pubid)::text)
    Rows Removed by Join Filter: 225677979
-   ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=89) 
+   ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=89)
        (actual time=0.012..689.233 rows=1233214 loops=1)
-   ->  Materialize  (cost=0.00..65499.14 rows=25 width=23) 
+   ->  Materialize  (cost=0.00..65499.14 rows=25 width=23)
        (actual time=0.000..0.071 rows=183 loops=1233214)
-         ->  Seq Scan on auth_i  (cost=0.00..65499.01 rows=25 width=23) 
+         ->  Seq Scan on auth_i  (cost=0.00..65499.01 rows=25 width=23)
              (actual time=104.495..507.970 rows=183 loops=1)
                Filter: ((name)::text = 'Divesh Srivastava'::text)
                Rows Removed by Filter: 3095018
@@ -134,24 +134,24 @@ Q2:
 {\small
 \begin{verbatim}
 Q1:
- Nested Loop  (cost=0.43..850049.42 rows=3095201 width=82) 
+ Nested Loop  (cost=0.43..850049.42 rows=3095201 width=82)
  (actual time=0.101..55181.800 rows=3095201 loops=1)
-   ->  Seq Scan on publ_i  (cost=0.00..34758.14 rows=1233214 width=89) 
+   ->  Seq Scan on publ_i  (cost=0.00..34758.14 rows=1233214 width=89)
        (actual time=0.037..721.909 rows=1233214 loops=1)
-   ->  Index Scan using pubida on auth_i  (cost=0.43..0.63 rows=3 width=38) 
+   ->  Index Scan using pubida on auth_i  (cost=0.43..0.63 rows=3 width=38)
        (actual time=0.032..0.041 rows=3 loops=1233214)
          Index Cond: ((pubid)::text = (publ_i.pubid)::text)
  Planning time: 0.148 ms
  Execution time: 56394.801 ms
 
 Q2:
- Nested Loop  (cost=0.43..65710.45 rows=25 width=67) 
+ Nested Loop  (cost=0.43..65710.45 rows=25 width=67)
  (actual time=103.244..511.228 rows=183 loops=1)
-   ->  Seq Scan on auth_i  (cost=0.00..65499.01 rows=25 width=23) 
+   ->  Seq Scan on auth_i  (cost=0.00..65499.01 rows=25 width=23)
        (actual time=103.176..505.597 rows=183 loops=1)
          Filter: ((name)::text = 'Divesh Srivastava'::text)
          Rows Removed by Filter: 3095018
-   ->  Index Scan using pubidp on publ_i  (cost=0.43..8.45 rows=1 width=89) 
+   ->  Index Scan using pubidp on publ_i  (cost=0.43..8.45 rows=1 width=89)
        (actual time=0.028..0.029 rows=1 loops=183)
          Index Cond: ((pubid)::text = (auth_i.pubid)::text)
  Planning time: 0.181 ms
@@ -161,8 +161,21 @@ Q2:
 }
 
 \paragraph{Discussion}
-Discuss here your observations. Are the response times expected? Why / why
-not? 
+Index on Publ.pubID - Q1:
+As expected publ is the inner relation, because we have an index on the join attribute on publ, which saves access time for the DBS. This means the DBS can use a index scan on publ, but has to use a seq scan on auth.
+This is as expected (for the nested loop join) the slowest approach for Q1, because the index is on the smaller of the two relations.
+Index on Publ.pubID - Q2:
+Again as in Q1 the DBS can use Publ.pubID as index and uses publ as inner relation, the only difference is that we filter auth with the selection on name, which results in a way smaller relation for the join. This explains the vast difference between the runtimes of Q1 and Q2.
+
+Index on Auth.pubID - Q1:
+In this case the DBS chooses auth as inner relation, because it can access it via the index. In fact the order of the relations is just the other way around compared to 'Index on Publ.pubID - Q1'. Of course the runtime is in this case smaller, because this time we have the index on the larger relation.
+Index on Auth.pubID - Q2:
+At a first glance the runtime for this one seems pretty high. The problem here is that the DBS can't benefit from the index, because it has to filter auth by names. So the only option in this case is a seq scan on auth. After the filtering, auth is again smaller than publ, which is the reason why auth is the inner relation. Given that we have no index on publ we have to go here for a seq scan again. This explains the relatively enormous runtime.
+
+Index on Publ.pubID and Auth.pubID - Q1:
+The query plan shows that auth is used as inner relation, which is as expected, because both relations have indexes, but auth is the one with more tuples. Also as expected is, that the outer query gets accessed via seq scan (we have to check every tuple anyway, so the index would be more hindering than helpful). This ends up in a query plan which is (basically) the same as the one from 'Index on Auth.pubID - Q1', which is not astonishing. The only curious fact here is the high difference in the runtime, which we have no explanation for.
+Index on Publ.pubID and Auth.pubID - Q2:
+As well as the previous query, this query has a "twin-query" too. It is basically the same as 'Index on Publ.pubID - Q2'. We have to access auth via seq scan because we have to apply the name filter (were we can't use the index on pubID). Since we have an index on publ, we use publ as the inner relation, hence auth as outer relation. Again (similar to our previous twins) the runtime is not exactly the same, but this time much more closer.
 
 \section{Sort-Merge Join}
 
@@ -178,7 +191,7 @@ not?
 \end{tabular}
 \end{flushleft}
 
-\paragraph{Query plans}\mbox{}\\ 
+\paragraph{Query plans}\mbox{}\\
 
 \noindent No index (Q1/Q2):
 {\small
@@ -195,20 +208,20 @@ Merge Join  (cost=846625.43..906956.29 rows=3095201 width=83)
                ->  Seq Scan on auth  (cost=0.00..57750.01 rows=3095201 width=38)
 
 Q2:
-Merge Join  (cost=351419.92..357590.96 rows=413 width=68) 
+Merge Join  (cost=351419.92..357590.96 rows=413 width=68)
 	    (actual time=24054.639..27857.060 rows=183 loops=1)
    Merge Cond: ((publ.pubid)::text = (auth.pubid)::text)
-   ->  Sort  (cost=285913.35..288996.38 rows=1233214 width=90) 
+   ->  Sort  (cost=285913.35..288996.38 rows=1233214 width=90)
              (actual time=23183.951..26169.586 rows=1229958 loops=1)
          Sort Key: publ.pubid
          Sort Method: external merge  Disk: 121400kB
-         ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=90) 
+         ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=90)
                                (actual time=0.026..850.908 rows=1233214 loops=1)
-   ->  Sort  (cost=65505.96..65506.99 rows=413 width=23) 
+   ->  Sort  (cost=65505.96..65506.99 rows=413 width=23)
 	     (actual time=519.464..519.550 rows=183 loops=1)
          Sort Key: auth.pubid
          Sort Method: quicksort  Memory: 39kB
-         ->  Seq Scan on auth  (cost=0.00..65488.01 rows=413 width=23) 
+         ->  Seq Scan on auth  (cost=0.00..65488.01 rows=413 width=23)
                                (actual time=8.420..518.464 rows=183 loops=1)
                Filter: ((name)::text = 'Divesh Srivastava'::text)
                Rows Removed by Filter: 3095018
@@ -225,27 +238,27 @@ since the second only contains publications by one author. Just like in query 1 
 {\small
 \begin{verbatim}
 Q1:
-Merge Join  (cost=0.86..263625.34 rows=3095201 width=83) 
+Merge Join  (cost=0.86..263625.34 rows=3095201 width=83)
             (actual time=0.038..36048.698 rows=3095201 loops=1)
    Merge Cond: ((publ.pubid)::text = (auth.pubid)::text)
-   ->  Index Scan using pubidpubl on publ  (cost=0.43..73055.43 rows=1233214 width=90) 
+   ->  Index Scan using pubidpubl on publ  (cost=0.43..73055.43 rows=1233214 width=90)
 					   (actual time=0.006..6608.030 rows=1233208 loops=1)
-   ->  Index Scan using pubidauth on auth  (cost=0.43..148974.61 rows=3095201 width=38) 
+   ->  Index Scan using pubidauth on auth  (cost=0.43..148974.61 rows=3095201 width=38)
 				           (actual time=0.005..13439.998 rows=3095201 loops=1)
  Planning time: 0.768 ms
  Execution time: 37306.638 ms
 
 Q2:
-Merge Join  (cost=65499.99..141460.64 rows=24 width=68) 
+Merge Join  (cost=65499.99..141460.64 rows=24 width=68)
 	    (actual time=508.011..508.011 rows=0 loops=1)
    Merge Cond: ((publ.pubid)::text = (auth.pubid)::text)
-   ->  Index Scan using pubidpubl on publ  (cost=0.43..73055.43 rows=1233214 width=90) 
+   ->  Index Scan using pubidpubl on publ  (cost=0.43..73055.43 rows=1233214 width=90)
 					   (actual time=0.006..0.006 rows=1 loops=1)
-   ->  Sort  (cost=65499.56..65499.62 rows=24 width=23) 
+   ->  Sort  (cost=65499.56..65499.62 rows=24 width=23)
 	     (actual time=508.002..508.002 rows=0 loops=1)
          Sort Key: auth.pubid
          Sort Method: quicksort  Memory: 25kB
-         ->  Seq Scan on auth  (cost=0.00..65499.01 rows=24 width=23) 
+         ->  Seq Scan on auth  (cost=0.00..65499.01 rows=24 width=23)
 			       (actual time=507.995..507.995 rows=0 loops=1)
                Filter: ((name)::text = 'Divesh Srivastav'::text)
                Rows Removed by Filter: 3095201
@@ -264,27 +277,27 @@ close to each other. This prohibits the system from performing sequential reads 
 {\small
 \begin{verbatim}
 Q1:
-Merge Join  (cost=0.86..263629.21 rows=3095201 width=83) 
+Merge Join  (cost=0.86..263629.21 rows=3095201 width=83)
 	    (actual time=0.022..17687.042 rows=3095201 loops=1)
    Merge Cond: ((publ.pubid)::text = (auth.pubid)::text)
-   ->  Index Scan using pubidpubl on publ  (cost=0.43..73057.97 rows=1233214 width=90) 
+   ->  Index Scan using pubidpubl on publ  (cost=0.43..73057.97 rows=1233214 width=90)
 					   (actual time=0.005..917.866 rows=1233208 loops=1)
-   ->  Index Scan using pubidauth on auth  (cost=0.43..148975.94 rows=3095201 width=38) 
+   ->  Index Scan using pubidauth on auth  (cost=0.43..148975.94 rows=3095201 width=38)
 					   (actual time=0.004..2033.002 rows=3095201 loops=1)
  Planning time: 0.606 ms
  Execution time: 18891.404 ms
 
 Q2:
-Merge Join  (cost=65500.99..141464.18 rows=24 width=68) 
+Merge Join  (cost=65500.99..141464.18 rows=24 width=68)
 	    (actual time=515.935..515.935 rows=0 loops=1)
    Merge Cond: ((publ.pubid)::text = (auth.pubid)::text)
-   ->  Index Scan using pubidpubl on publ  (cost=0.43..73057.97 rows=1233214 width=90) 
+   ->  Index Scan using pubidpubl on publ  (cost=0.43..73057.97 rows=1233214 width=90)
     				           (actual time=0.006..0.006 rows=1 loops=1)
-   ->  Sort  (cost=65500.56..65500.62 rows=24 width=23) 
+   ->  Sort  (cost=65500.56..65500.62 rows=24 width=23)
 	     (actual time=515.926..515.926 rows=0 loops=1)
          Sort Key: auth.pubid
          Sort Method: quicksort  Memory: 25kB
-         ->  Seq Scan on auth  (cost=0.00..65500.01 rows=24 width=23) 
+         ->  Seq Scan on auth  (cost=0.00..65500.01 rows=24 width=23)
                                (actual time=515.919..515.919 rows=0 loops=1)
                Filter: ((name)::text = 'Divesh Srivastav'::text)
                Rows Removed by Filter: 3095201
@@ -317,18 +330,18 @@ relation does not have a big impact.
 \end{tabular}
 \end{flushleft}
 
-\paragraph{Query plans}\mbox{}\\ 
+\paragraph{Query plans}\mbox{}\\
 
 \noindent No Index (Q1/Q2):
 {\small
 \begin{verbatim}
 Q1:
- Hash Join  (cost=68174.32..250399.34 rows=3095201 width=82) 
+ Hash Join  (cost=68174.32..250399.34 rows=3095201 width=82)
  (actual time=1834.128..8248.005 rows=3095201 loops=1)
    Hash Cond: ((auth.pubid)::text = (publ.pubid)::text)
    ->  Seq Scan on auth  (cost=0.00..57761.01 rows=3095201 width=38)
        (actual time=0.011..1413.767 rows=3095201 loops=1)
-   ->  Hash  (cost=34694.14..34694.14 rows=1233214 width=89) 
+   ->  Hash  (cost=34694.14..34694.14 rows=1233214 width=89)
        (actual time=1833.830..1833.830 rows=1233214 loops=1)
          Buckets: 4096  Batches: 64  Memory Usage: 2344kB
          ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=89)
@@ -337,15 +350,15 @@ Q1:
  Execution time: 9426.895 ms
 
 Q2:
- Hash Join  (cost=65499.31..140273.15 rows=24 width=67) 
+ Hash Join  (cost=65499.31..140273.15 rows=24 width=67)
  (actual time=607.564..1667.832 rows=183 loops=1)
    Hash Cond: ((publ.pubid)::text = (auth.pubid)::text)
-   ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=89) 
+   ->  Seq Scan on publ  (cost=0.00..34694.14 rows=1233214 width=89)
        (actual time=0.045..592.658 rows=1233214 loops=1)
-   ->  Hash  (cost=65499.01..65499.01 rows=24 width=23) 
+   ->  Hash  (cost=65499.01..65499.01 rows=24 width=23)
        (actual time=516.867..516.867 rows=183 loops=1)
          Buckets: 1024  Batches: 1  Memory Usage: 11kB
-         ->  Seq Scan on auth  (cost=0.00..65499.01 rows=24 width=23) 
+         ->  Seq Scan on auth  (cost=0.00..65499.01 rows=24 width=23)
              (actual time=321.786..516.733 rows=183 loops=1)
                Filter: ((name)::text = 'Divesh Srivastava'::text)
                Rows Removed by Filter: 3095018
