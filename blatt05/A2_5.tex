@@ -190,8 +190,7 @@ As well as the previous query, this query has a "twin-query" too. It is basicall
 \end{flushleft}
 
 \paragraph{Query plans}\mbox{}\\
-\\
-\noindent No index (Q1/Q2):
+\subparagraph{No index (Q1/Q2):}
 {\small
 \begin{verbatim}
 Q1:
@@ -232,7 +231,7 @@ query 2 is much faster since first a selection is consucted using a linear scan 
 since the second only contains publications by one author. Just like in query 1 the system then uses a merge-join to get the result.
 }
 \\
-\noindent Two non-clustering indexes (Q1/Q2):
+\subparagraph{Two non-clustering indexes (Q1/Q2):}
 {\small
 \begin{verbatim}
 Q1:
@@ -271,7 +270,7 @@ This method is still not optimal since only the index is sorted whereas the actu
 close to each other. This prohibits the system from performing sequential reads which slows down query execution compared to a clustering index.
 }
 \\
-\noindent Two clustering indexes  (Q1/Q2):
+\subparagraph{Two clustering indexes  (Q1/Q2):}
 {\small
 \begin{verbatim}
 Q1:
