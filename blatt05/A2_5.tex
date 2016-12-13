@@ -361,10 +361,11 @@ Q2:
 About the query plans:
 Q1 uses publ as build input as expected, because it is the relation with less tuple.
 In the case of Q2 the DBS uses auth as build input, because after the selection (name = 'Divesh Srivastava') the rest of auth is smaller than publ.
-
-What do you think about the response time of the hash index vs.\ the
-response times of sort-merge and index nested loop join for each of
-the queries? Explain.
+\\
+Response time:
+Compared to the merge-join is faster for query 1 which is expected for no index and non-clustering indexex since. If there are no indexes both relations have to be sorted which is expensive. In case of two non-clsutering indexes data can be accessed through the always sorted index, but these data-accesses are random since the suples are not sorted on the disk which leads to many blocks being read more than once and explaines why the hash join is faster. The fact that a merge join using two clustering indexex is slower than a hssh join is not expected since in theory a merge-join on of two sorted relations should require only about 1/3 of block accesses a hash join requires.
+For query 2 all results were expected. The no-index-case is extremely slow. both other cases are faster than the hash join since the second relation is really small and a hash join has a big overhead.
+Looking at query 1 the hash join is a lot faster than the nested loop join no matter which indexes are used. This is as expected since in this case nested loop joins are index-nested loop joins which have to do an index lookup for each tuple in the outer relation. Both relations are quite large, so $3 * (b_r + b_s)$ is a lot smaller than $b_r + n_r * c$ where c are the block accesses for an index lookup.
 
 \bigskip
 
