@@ -7,7 +7,6 @@
  *
  * Lecturer: Nikolaus Augsten
  */
-package acount;
 
 import java.sql.Connection;
 import java.util.concurrent.ExecutorService;
