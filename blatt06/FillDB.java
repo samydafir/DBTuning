@@ -16,7 +16,7 @@ public class FillDB {
 		
 		con = getCon();
 		con.createStatement().execute(create);
-		con.createStatement().execute("INSERT INTO Accounts VALUES(0,0);");
+		con.createStatement().execute("INSERT INTO Accounts VALUES(0,100);");
 		for(int i = 1; i <= 100; i++){
 			con.createStatement().execute("INSERT INTO Accounts VALUES(" + i + "," + 0 + ");");
 		}
