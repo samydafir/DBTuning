@@ -26,7 +26,7 @@ class Transaction extends Thread {
 
 	@Override
 	public void run() {
-		System.out.println("transaction " + id + " started");
+		//System.out.println("transaction " + id + " started");
 		
 		String query1 = "SET e = SELECT balance FROM Accounts WHERE account =" + this.id
 					  + "UPDATE Accounts SET balance = e + 1 WHERE account =" + this.id
@@ -44,7 +44,6 @@ class Transaction extends Thread {
 			con.setTransactionIsolation(isolation);
 			con.createStatement().execute(whichQuery == 1 ? query1 : query2);
 			con.commit();
-				
 		} catch (SQLException | IOException e) {
 			run();
 		}
@@ -64,17 +63,4 @@ class Transaction extends Thread {
 		
 		return DriverManager.getConnection(url, user, pwd);
 	}
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
