@@ -26,7 +26,7 @@ public class ConcurrentTransactions {
 	public static void main(String[] args) {
 
 		// read command line parameters
-		if (args.length != 2) {
+		if (args.length != 3) {
 			System.err.println("params: numThreads maxConcurrent whichQuery (1 | 2)");
 			System.exit(-1);
 		}
