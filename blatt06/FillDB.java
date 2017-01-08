@@ -15,10 +15,10 @@ public class FillDB {
 		String create = "CREATE TABLE Accounts (account integer, balance integer);";
 		
 		con = getCon();
-		con.createStatement().executeQuery(create);
-		con.createStatement().executeQuery("INSERT INTO Accounts VALUES(0,0);");
+		con.createStatement().execute(create);
+		con.createStatement().execute("INSERT INTO Accounts VALUES(0,0);");
 		for(int i = 1; i <= 100; i++){
-			con.createStatement().executeQuery("INSERT INTO Accounts VALUES(" + i + "," + 0 + ");");
+			con.createStatement().execute("INSERT INTO Accounts VALUES(" + i + "," + 0 + ");");
 		}
 		
 		
