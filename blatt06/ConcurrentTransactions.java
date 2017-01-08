@@ -8,6 +8,7 @@
  * Lecturer: Nikolaus Augsten
  */
 
+import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,7 +24,7 @@ import java.util.concurrent.Executors;
  */
 public class ConcurrentTransactions {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException {
 
 		// read command line parameters
 		if (args.length != 3) {

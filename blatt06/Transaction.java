@@ -1,6 +1,5 @@
-
-
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
@@ -17,26 +16,29 @@ class Transaction extends Thread {
 	int id;
 	int isolation;
 	int whichQuery;
+	Connection con = null;
+	BufferedReader credentials;
+	
+	String query1 = "SET e = SELECT balance FROM Accounts WHERE account =" + this.id
+			  	  + "UPDATE Accounts SET balance = e + 1 WHERE account =" + this.id
+			  	  + "SET c = SELECT balance FROM Accounts WHERE account = 0"
+			  	  + "UPDATE Accounts SET balance = c - 1 WHERE account = 0;";
 
-	Transaction(int id, int isolationLevel, int whichQuery) {
+	String query2 = "UPDATE Accounts set balance = balance + 1 where account = " + this.id
+					+ "UPDATE Accounts set balance = balance - 1 where account = 0;";
+	
+	
+
+	Transaction(int id, int isolationLevel, int whichQuery) throws FileNotFoundException {
 		this.id = id;
 		this.isolation = isolationLevel;
-		this.whichQuery = whichQuery;		
+		this.whichQuery = whichQuery;	
+		credentials = new BufferedReader(new FileReader("../credentials.txt"));
 	}
 
 	@Override
 	public void run() {
 		//System.out.println("transaction " + id + " started");
-		
-		String query1 = "SET e = SELECT balance FROM Accounts WHERE account =" + this.id
-					  + "UPDATE Accounts SET balance = e + 1 WHERE account =" + this.id
-					  + "SET c = SELECT balance FROM Accounts WHERE account = 0"
-					  + "UPDATE Accounts SET balance = c - 1 WHERE account = 0;";
-		
-		String query2 = "UPDATE Accounts set balance = balance + 1 where account = " + this.id
-					  + "UPDATE Accounts set balance = balance - 1 where account = 0;";
-		
-		Connection con = null;
 		
 		try {
 			con = getCon();
@@ -52,7 +54,6 @@ class Transaction extends Thread {
 	
 	public Connection getCon() throws SQLException, IOException {
 		
-		BufferedReader credentials = new BufferedReader(new FileReader("../credentials.txt"));
 		String host = "biber.cosy.sbg.ac.at";
 		String port = "5432";
 		String database = "dbtuning_ws2016";
