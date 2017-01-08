@@ -7,7 +7,9 @@ import java.sql.SQLException;
 
 public class FillDB {
 
-	public static void main(String[] args) throws SQLException, IOException{
+	public static void main(String[] args) throws SQLException, IOException, ClassNotFoundException{
+		
+		Class.forName("org.postgresql.Driver");
 		Connection con = getCon();
 	
 		String create = "CREATE TABLE Accounts (account integer, balance integer);";
