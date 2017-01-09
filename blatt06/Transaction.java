@@ -17,14 +17,6 @@ class Transaction extends Thread {
 	Connection con = null;
 	BufferedReader credentials;
 	
-	String query1 = "SET e = SELECT balance FROM Accounts WHERE account =" + this.id
-			  	  + "UPDATE Accounts SET balance = e + 1 WHERE account =" + this.id
-			  	  + "SET c = SELECT balance FROM Accounts WHERE account = 0"
-			  	  + "UPDATE Accounts SET balance = c - 1 WHERE account = 0;";
-
-	String query2 = "UPDATE Accounts set balance = balance + 1 where account = " + this.id
-					+ "UPDATE Accounts set balance = balance - 1 where account = 0;";
-	
 	
 
 	Transaction(int id, int isolationLevel, int whichQuery) throws SQLException, IOException, ClassNotFoundException {
@@ -32,20 +24,32 @@ class Transaction extends Thread {
 		this.whichQuery = whichQuery;	
 		credentials = new BufferedReader(new FileReader("../credentials.txt"));
 		con = getCon();
-		con.setAutoCommit(false);
-		con.setTransactionIsolation(isolationLevel);
+		//con.setAutoCommit(false);
+		//con.setTransactionIsolation(isolationLevel);
 
 	}
 
 	@Override
 	public void run() {
 		System.out.println("transaction " + id + " started");
-		
+
+		String query1 = "BEGIN; SET TRANSACTION ISOLATION LEVEL SERIALIZABLE; SET e = SELECT balance FROM Accounts WHERE account =" + this.id + ";"
+			  	  + "UPDATE Accounts SET balance = e + 1 WHERE account =" + this.id + ";"
+			  	  + "SET c = SELECT balance FROM Accounts WHERE account = 0;"
+			  	  + "UPDATE Accounts SET balance = c - 1 WHERE account = 0; END; COMMIT;";
+
+		String query2 = "START TRANSACTION ISOLATION LEVEL SERIALIZABLE; UPDATE Accounts set balance = balance + 1 where account = " + this.id + ";"
+	               	      + "UPDATE Accounts set balance = balance - 1 where account = 0; COMMIT;";
 		try {
 			con.createStatement().execute(whichQuery == 1 ? query1 : query2);
-			con.commit();
-		} catch (SQLException e) {
+		} catch (SQLException e) {			
+			//e.printStackTrace();			
 			run();
+		}
+		try{
+			con.close();
+		}catch(SQLException e){
+			e.printStackTrace();
 		}
 	}
 	

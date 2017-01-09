@@ -38,7 +38,7 @@ public class ConcurrentTransactions {
 		int numThreads = Integer.parseInt(args[0]);
 		int maxConcurrent = Integer.parseInt(args[1]);
 		int whichQuery = Integer.parseInt(args[2]);
-		int isolationLevel = Connection.TRANSACTION_SERIALIZABLE;
+		int isolationLevel = Connection.TRANSACTION_READ_COMMITTED;
 
 		// create numThreads transactions
 		Transaction[] trans = new Transaction[numThreads];
