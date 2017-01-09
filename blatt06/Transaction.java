@@ -1,5 +1,4 @@
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
@@ -14,7 +13,6 @@ class Transaction extends Thread {
 
 	// identifier of the transaction
 	int id;
-	int isolation;
 	int whichQuery;
 	Connection con = null;
 	BufferedReader credentials;
@@ -29,24 +27,24 @@ class Transaction extends Thread {
 	
 	
 
-	Transaction(int id, int isolationLevel, int whichQuery) throws FileNotFoundException {
+	Transaction(int id, int isolationLevel, int whichQuery) throws SQLException, IOException, ClassNotFoundException {
 		this.id = id;
-		this.isolation = isolationLevel;
 		this.whichQuery = whichQuery;	
 		credentials = new BufferedReader(new FileReader("../credentials.txt"));
+		con = getCon();
+		con.setAutoCommit(false);
+		con.setTransactionIsolation(isolationLevel);
+
 	}
 
 	@Override
 	public void run() {
-		//System.out.println("transaction " + id + " started");
+		System.out.println("transaction " + id + " started");
 		
 		try {
-			con = getCon();
-			con.setAutoCommit(false);
-			con.setTransactionIsolation(isolation);
 			con.createStatement().execute(whichQuery == 1 ? query1 : query2);
 			con.commit();
-		} catch (SQLException | IOException e) {
+		} catch (SQLException e) {
 			run();
 		}
 	}

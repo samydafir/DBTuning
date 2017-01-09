@@ -8,8 +8,9 @@
  * Lecturer: Nikolaus Augsten
  */
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -24,8 +25,11 @@ import java.util.concurrent.Executors;
  */
 public class ConcurrentTransactions {
 
-	public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args) throws SQLException, IOException, ClassNotFoundException {
 
+		Class.forName("org.postgresql.Driver");
+
+		
 		// read command line parameters
 		if (args.length != 3) {
 			System.err.println("params: numThreads maxConcurrent whichQuery (1 | 2)");
@@ -34,7 +38,7 @@ public class ConcurrentTransactions {
 		int numThreads = Integer.parseInt(args[0]);
 		int maxConcurrent = Integer.parseInt(args[1]);
 		int whichQuery = Integer.parseInt(args[2]);
-		int isolationLevel = Connection.TRANSACTION_READ_COMMITTED;
+		int isolationLevel = Connection.TRANSACTION_SERIALIZABLE;
 
 		// create numThreads transactions
 		Transaction[] trans = new Transaction[numThreads];
