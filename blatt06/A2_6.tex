@@ -28,6 +28,10 @@
   for an example.
 \end{itemize}
 
+\section*{Setup}
+All experiments were executed on the computers in the R\"UR. JDBC was used to send
+transactions to the database server (biber). Time was measured using the $time$ shell command.
+
 \section*{Task 1}
 
 \subsection*{Read Committed}
@@ -40,11 +44,11 @@ Throughput and correctness for solution (a) with serialization level
 \begin{tabular}{c|c|c}
   \#Concurrent Transactions & Throughput [transactions/sec] & Correctness
   \\\hline
-  1 & & \\
-  2 & & \\
-  3 & & \\
-  4 & & \\
-  5 & & \\ 
+  1 & 18.9 & 100\% \\
+  2 & 32.6 & 52\% \\
+  3 & 45.4 & 70\% \\
+  4 & 56.3 & 59\% \\
+  5 & 64.1 & 55\% \\    
 \end{tabular}
 
 \medskip
@@ -80,11 +84,11 @@ Throughput and correctness for solution (b) with serialization level
 \begin{tabular}{c|c|c}
   \#Concurrent Transactions & Throughput [transactions/sec] & Correctness
   \\\hline
-  1 & & \\
-  2 & & \\
-  3 & & \\
-  4 & & \\
-  5 & & \\    
+  1 & 23.5 & 100\% \\
+  2 & 39.1 & 100\% \\
+  3 & 52.6 & 100\% \\
+  4 & 58.9 & 100\% \\
+  5 & 67.6 & 100\% \\    
 \end{tabular}
 
 \medskip
