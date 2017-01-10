@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.ResultSet;
 
 /**
  * Dummy transaction that prints a start message, waits for a random time
@@ -19,10 +20,12 @@ class Transaction extends Thread {
 	Statement stmt = null;
 	String query1;
 	String query2;
+	int isolationLevel;
 
 	Transaction(int id, int isolationLevel, int whichQuery) throws SQLException, IOException, ClassNotFoundException {
 		this.id = id;
-		this.whichQuery = whichQuery;	
+		this.whichQuery = whichQuery;
+		this.isolationLevel = isolationLevel;
 	}
 
 	@Override
@@ -30,23 +33,25 @@ class Transaction extends Thread {
 		System.out.println("transaction " + this.id + " started");
 		try {
 			con = getCon();
+			con.setTransactionIsolation(isolationLevel);
 			con.setAutoCommit(false);
 			stmt = con.createStatement();
+			ResultSet results;
+			int value;
 
 			if(whichQuery == 1){
-				query1 = "START TRANSACTION ISOLATION LEVEL READ COMMITTED;";
-				stmt.executeUpdate(query1);
+				value = -1;
 
 				query1 = "SET e = SELECT balance FROM accounts WHERE account =" + this.id + ";";
+				value = Integer.parseInt(stmt.executeQuery(query1).getString("balance"));
+
+				query1 = "UPDATE accounts SET balance = " + value + " + 1 WHERE account =" + this.id + ";";
 				stmt.executeUpdate(query1);
 
-				query1 = "UPDATE accounts SET balance = e + 1 WHERE account =" + this.id + ";";
-				stmt.executeUpdate(query1);
+				query1 = "SELECT balance FROM accounts WHERE account = 0;";
+				value = Integer.parseInt(stmt.executeQuery(query1).getString("balance"));
 
-				query1 = "SET c = SELECT balance FROM accounts WHERE account = 0;";
-				stmt.executeUpdate(query1);
-
-				query1 = "UPDATE accounts SET balance = c - 1 WHERE account = 0;";
+				query1 = "UPDATE accounts SET balance = " + value + " - 1 WHERE account = 0;";
 				stmt.executeUpdate(query1);
 
 			}else if(whichQuery == 2){
