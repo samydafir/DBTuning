@@ -36,13 +36,12 @@ class Transaction extends Thread {
 			con.setTransactionIsolation(isolationLevel);
 			con.setAutoCommit(false);
 			stmt = con.createStatement();
-			ResultSet results;
 			int value;
 
 			if(whichQuery == 1){
 				value = -1;
 
-				query1 = "SET e = SELECT balance FROM accounts WHERE account =" + this.id + ";";
+				query1 = "SELECT balance FROM accounts WHERE account =" + this.id + ";";
 				value = Integer.parseInt(stmt.executeQuery(query1).getString("balance"));
 
 				query1 = "UPDATE accounts SET balance = " + value + " + 1 WHERE account =" + this.id + ";";
@@ -55,9 +54,6 @@ class Transaction extends Thread {
 				stmt.executeUpdate(query1);
 
 			}else if(whichQuery == 2){
-				query2 = "START TRANSACTION ISOLATION LEVEL SERIALIZABLE;";
-				stmt.executeUpdate(query2);
-
 				query2 = "UPDATE accounts set balance = balance + 1 where account = " + this.id + ";";
 				stmt.executeUpdate(query2);
 
