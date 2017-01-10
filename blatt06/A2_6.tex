@@ -9,24 +9,15 @@
 }
 
 \author{
- Group Name (e.g. A1, B5, B3)\\
- \large Lastname1 Firstname1, StudentID1 \\
- \large Lastname2 Firstname2, StudentID2 \\
- \large Lastname3 Firstname3, StudentID3 
+A2\\
+\large Baumgartner Dominik, 0920177 \\
+\large Dafir Thomas Samy, 1331483 \\
+\large Sch\"orgnhofer Kevin, 1421082 
 }
 
 \begin{document}
 
 \maketitle
-
-\noindent
-{\it Notes:}
-
-\begin{itemize}
-\item You will need to run transactions concurrently using threads in
-  Java. See\\ \url{http://dbresearch.uni-salzburg.at/teaching/2016ws/dbt/account.zip}
-  for an example.
-\end{itemize}
 
 \section*{Setup}
 All experiments were executed on the computers in the R\"UR. JDBC was used to send
@@ -103,7 +94,7 @@ Throughput and correctness for solution (b) with serialization level
 \begin{tabular}{c|c|c}
   \#Concurrent Transactions & Throughput [transactions/sec] & Correctness
   \\\hline
-  1 & 21,74 - 23.8 & 100 \% \\
+  1 & 21.74 - 23.8 & 100 \% \\
   2 & 26.31 - 40.0 & 100 \%\\
   3 & 27.78 - 40.0 & 100 \%\\
   4 & 35.71 - 45.45 & 100 \%\\
@@ -122,7 +113,11 @@ Serializable uses strict 2-phase locking for read and write operations: only one
 
 \subsection*{Task 2}
 
-Discuss outcome of task 2 here.
+For both isolation levels we get 100\% correctness, as expected.\\
+For the isolation level serializable it is obvious that the concurrent transactions have no effects to each other (that is kind of the definition of this isolation level), which results in 100\% correctness.\\
+To understand the 100\% correctness of the read committed isolation level, we have to take a look at the transaction: it consits of two update statements, which are both enclosed and do not relate on a value from a previous select statement (or similar).\\
+The throughput increases as the number of concurrent transactions increases (as expected).\\
+Compared to serializable the throughput of read committed is higher, because a concurrent transaction B which starts after transaction A, waits until A commits and commits then itself. With serializable, transaction B aborts after A commits. This leads to way more queries needed for the isolation level serializable, hence to a lower throughput.
 
 
 \bigskip
