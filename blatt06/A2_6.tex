@@ -114,21 +114,16 @@ Throughput and correctness for solution (b) with serialization level
 
 \section*{Task 3: Discussion}
 
-Discuss the outcome and explain the difference between the isolation
-levels in PostgreSQL with respect to your experiment.
-
-Explain {\bf with your own words} how PostgreSQL deals with updates in
-the different isolation levels, within a transaction and within a
-single SQL command. Explicitly explain why you got the experimental
-results of Task~1 and Task~2.
-
 \subsection*{Task 1}
+As expected using isolation level read committed led to a much higher throughput with increasing number of concurrent transactions. In the case of serializable the gain was not as dramatic. This is due to the conflicts caused by the serializable isolation level leading to transactions being executed several times before committing which leads to lower throughput.
+Error rates are also as expected: Using serializable leads to no errors at all since it yields the same results as a serial execution of all transactions. In the case of read committed non repeatable reads occur since every transaction sees the database as it was at the time the transaction started. E.g. if a transaction manipulates $balance$ by subtracting 1 it does not notice that other transactions might have done the same in the meantime. When this transaction commits it writes the old value decreased by 1 in to the db. This leads to calculation errors but increases the throughput since no transactions are rolled back and re-executed.
 
-Discuss outcome of task 1 here.
+Serializable uses strict 2-phase locking for read and write operations: only one transaction can read/write data at a time. Locks are released after a transaction commits. Transactions trying to modify the same dataset as the current transaction have to wait until it commits. Any changes done by other transactions are rolled back.
 
 \subsection*{Task 2}
 
 Discuss outcome of task 2 here.
+
 
 \bigskip
 
