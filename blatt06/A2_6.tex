@@ -116,7 +116,7 @@ Error rates are also as expected: Using serializable leads to no errors at all s
 
 For both isolation levels we get 100\% correctness, as expected.\\
 For the isolation level serializable it is obvious that the concurrent transactions have no effects to each other (that is kind of the definition of this isolation level), which results in 100\% correctness.\\
-To understand the 100\% correctness of the read committed isolation level, we have to take a look at the transaction: it consits of two update statements, which are both enclosed and do not relate on a value from a previous select statement (or similar).\\
+To understand the 100\% correctness of the read committed isolation level, we have to take a look at the transaction: it consits of two update statements, which are both enclosed and do not relate on a value from a previous select statement (or similar). So there is no way an update statement from another transaction could interfere with the current update statement.\\
 The throughput increases as the number of concurrent transactions increases (as expected).\\
 Compared to serializable the throughput of read committed is higher, because a concurrent transaction B which starts after transaction A, waits until A commits and commits then itself. With serializable, transaction B aborts after A commits. This leads to way more queries needed for the isolation level serializable, hence to a lower throughput.
 
