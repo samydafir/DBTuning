@@ -107,9 +107,9 @@ Throughput and correctness for solution (b) with serialization level
 
 \subsection*{Task 1}
 As expected using isolation level read committed led to a much higher throughput with increasing number of concurrent transactions. In the case of serializable the gain was not as dramatic. This is due to the conflicts caused by the serializable isolation level leading to transactions being executed several times before committing which leads to lower throughput.
-Error rates are also as expected: Using serializable leads to no errors at all since it yields the same results as a serial execution of all transactions. In the case of read committed non repeatable reads occur since every transaction sees the database as it was at the time the transaction started. E.g. if a transaction manipulates $balance$ by subtracting 1 it does not notice that other transactions might have done the same in the meantime. When this transaction commits it writes the old value decreased by 1 in to the db. This leads to calculation errors but increases the throughput since no transactions are rolled back and re-executed.
+Serializable uses strict 2-phase locking for read and write operations: only one transaction can read/write data at a time. Locks are released after a transaction commits. Transactions trying to modify the same dataset as the current transaction have to wait until it commits. Any changes done by other transactions are rolled back. 
 
-Serializable uses strict 2-phase locking for read and write operations: only one transaction can read/write data at a time. Locks are released after a transaction commits. Transactions trying to modify the same dataset as the current transaction have to wait until it commits. Any changes done by other transactions are rolled back.
+Error rates are also as expected: Using serializable leads to no errors at all since it yields the same results as a serial execution of all transactions. In the case of read committed non repeatable reads occur since every transaction sees the database as it was at the time the transaction started. E.g. if a transaction manipulates $balance$ by subtracting 1 it does not notice that other transactions might have done the same in the meantime. When this transaction commits it writes the old value decreased by 1 in to the db. This leads to calculation errors but increases the throughput since no transactions are rolled back and re-executed.
 
 \subsection*{Task 2}
 
@@ -119,6 +119,7 @@ To understand the 100\% correctness of the read committed isolation level, we ha
 The throughput increases as the number of concurrent transactions increases (as expected).\\
 Compared to serializable the throughput of read committed is higher, because a concurrent transaction B which starts after transaction A, waits until A commits and commits then itself. With serializable, transaction B aborts after A commits. This leads to way more queries needed for the isolation level serializable, hence to a lower throughput.
 
+\subsection*{Update}
 
 \bigskip
 
