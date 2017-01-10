@@ -37,18 +37,27 @@ class Transaction extends Thread {
 			con.setAutoCommit(false);
 			stmt = con.createStatement();
 			int value;
+			ResultSet results;
 
 			if(whichQuery == 1){
 				value = -1;
 
 				query1 = "SELECT balance FROM accounts WHERE account =" + this.id + ";";
-				value = Integer.parseInt(stmt.executeQuery(query1).getString("balance"));
+				results = null;				
+				results = stmt.executeQuery(query1);
+        		while (results.next()) {
+					value = Integer.parseInt(results.getString("balance"));
+				}
 
 				query1 = "UPDATE accounts SET balance = " + value + " + 1 WHERE account =" + this.id + ";";
 				stmt.executeUpdate(query1);
 
 				query1 = "SELECT balance FROM accounts WHERE account = 0;";
-				value = Integer.parseInt(stmt.executeQuery(query1).getString("balance"));
+				results = null;				
+				results = stmt.executeQuery(query1);
+        		while (results.next()) {
+					value = Integer.parseInt(results.getString("balance"));
+				}
 
 				query1 = "UPDATE accounts SET balance = " + value + " - 1 WHERE account = 0;";
 				stmt.executeUpdate(query1);
