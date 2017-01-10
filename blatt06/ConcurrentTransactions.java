@@ -48,6 +48,7 @@ public class ConcurrentTransactions {
 
 		// start all transactions using a thread pool
 		ExecutorService pool = Executors.newFixedThreadPool(maxConcurrent);
+		//System.out.println("Starttime: " + System.currentTimeMillis());		
 		for (int i = 0; i < trans.length; i++) {
 			pool.execute(trans[i]);
 		}

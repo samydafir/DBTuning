@@ -30,7 +30,7 @@ class Transaction extends Thread {
 
 	@Override
 	public void run() {
-		System.out.println("transaction " + this.id + " started");
+		//System.out.println("transaction " + this.id + " started");
 		try {
 			con = getCon();
 			con.setTransactionIsolation(isolationLevel);
@@ -72,8 +72,9 @@ class Transaction extends Thread {
 			stmt.close();
 			con.commit();
 			con.close();
+			//System.out.println("Endtime: " + System.currentTimeMillis());
 		} catch (IOException | SQLException e) {			
-			e.printStackTrace();
+			//e.printStackTrace();
 			try{
 				stmt.close();
 				con.rollback();
