@@ -23,15 +23,11 @@ class Transaction extends Thread {
 	Transaction(int id, int isolationLevel, int whichQuery) throws SQLException, IOException, ClassNotFoundException {
 		this.id = id;
 		this.whichQuery = whichQuery;	
-		long startTime = 0;
-		long endTime = 0;
-		long runTime = 0;
 	}
 
 	@Override
 	public void run() {
 		System.out.println("transaction " + this.id + " started");
-		startTime = System.currentTimeMillis();
 		try {
 			con = getCon();
 			con.setAutoCommit(false);
@@ -66,7 +62,6 @@ class Transaction extends Thread {
 			stmt.close();
 			con.commit();
 			con.close();
-			endTime = System.currentTimeMillis();
 		} catch (IOException | SQLException e) {			
 			e.printStackTrace();
 			try{
@@ -78,11 +73,7 @@ class Transaction extends Thread {
 				f.printStackTrace();
 			}
 		}
-	}
-	
-	public long getRuntime(){
-		runTime = endTime - startTime;
-		
+	}		
 	
 	public Connection getCon() throws SQLException, IOException {
 		
